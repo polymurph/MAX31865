@@ -12,9 +12,8 @@
 //#include <util/delay.h>
 
 static fptr_ret_t spi_trx = NULL_PTR; /*!< spi_trx callback function*/
-static fptr_t delay_ms = NULL_PTR; /*!< delay_ms callback function*/
-static fptr_t chargetime = NULL_PTR;
-static fptr_t conversiontime = NULL_PTR;
+static fptr_t chargetime = NULL_PTR; /*!< chargetimer delay callback function*/
+static fptr_t conversiontime = NULL_PTR; /*!< conversiontime delay callback function*/
 
 // temperature curve polynomial approximation coefficients
 static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for 
@@ -36,7 +35,7 @@ static const float a5 = 7.31888555389e-13; /*!< 5. polynomial coeff. for
  *	@param 	n buffer size
  *	@return
  *		This function reads multiple regsiters\n
- *		starting at the designated register set\¨n
+ *		starting at the designated register set\Â¨n
  *      addr. The contetn of each register is\n
  *		stored in the buffer. The ammount of\n
  *		registers to be read is defined by n.\n
@@ -294,9 +293,9 @@ float max31865_readRTD(max31865_t device)
 /************************************************
  *	@brief Read Temperature in Celsius
  *	@param	device max31865_t
- *	@return float °C value
+ *	@return float Â°C value
  *		this function reads the raw ADC value and\n
- *		and calculates the °C value with the help\n
+ *		and calculates the Â°C value with the help\n
  *		of the polynomial approximation of the\n
  *		RTD curve.
  *
@@ -323,9 +322,9 @@ float max31865_readCelsius(max31865_t device)
  *	@brief Read Temperature in Kelvin
  *	@param	device
  *	@return float K Kelvin
- *		This function reads the °C value and\n
+ *		This function reads the Â°C value and\n
  *		and converts it to Kelvin by adding\n
- *		the constant 273.15 to the °C value.
+ *		the constant 273.15 to the Â°C value.
  *
  *	@todo
  *	@test
