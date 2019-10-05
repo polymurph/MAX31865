@@ -8,10 +8,13 @@
 #include "max31865.h"
 
 // @todo make this lib independent of target device
-#define F_CPU 16000000UL
-#include <util/delay.h>
+//#define F_CPU 16000000UL
+//#include <util/delay.h>
 
 static fptr_ret_t spi_trx = NULL_PTR; /*!< spi_trx callback function*/
+static fptr_t delay_ms = NULL_PTR; /*!< delay_ms callback function*/
+static fptr_t chargetime = NULL_PTR;
+static fptr_t conversiontime = NULL_PTR;
 
 // temperature curve polynomial approximation coefficients
 static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for 
@@ -180,6 +183,26 @@ void max31865_unregister_spi_trx()
 	spi_trx = NULL_PTR;
 }
 
+void max31865_register_chargetime_delay(fptr_t cb)
+{
+	chargetime = cb;
+}
+
+void max31865_unregister_chargetime_delay()
+{
+	chargetime = NULL_PTR;
+}
+
+void max31865_register_conversiontime_delay(fptr_t cb)
+{
+	conversiontime = cb;
+}
+
+void max31865_unregister_conversiontime_delay()
+{
+	conversiontime = NULL_PTR;
+}
+
 /************************************************
  *	@brief device configurator
  *	@param	device max31865_t device typedef struct
@@ -230,13 +253,15 @@ uint16_t max31865_readADC(max31865_t device)
 	writeReg(device,0x80,(device.configReg | 0x80)); 
 	
 	// wait until rtd filter capacitor is charged and
-	_delay_ms(RTD_CAPACITOR_CHARGETIME_ms);
+	//delay_ms(RTD_CAPACITOR_CHARGETIME_ms);
+	chargetime();
 	
 	// initiate 1-shot conversion
 	writeReg(device,0x80,(device.configReg | 0xA0));
 	
 	// wait until conversion is complete
-	_delay_ms(63);
+	//delay_ms(63);
+	conversiontime();
 	
 	readNReg(device,0x01,buff,2);
 	

@@ -13,6 +13,7 @@
 #include "hal_spi.h"
 #include <stdio.h>
 
+
 void usartSettup()
 {
 	cli();
@@ -53,6 +54,16 @@ void spi_settup()
 	sei();
 }
 
+void delay_chargetime()
+{
+	_delay_ms(RTD_CAPACITOR_CHARGETIME_ms);
+}
+
+void delay_conversiontime()
+{
+	_delay_ms(63);
+}
+
 /*
 	prject settup for sprintf with uint16_t values
 	https://startingelectronics.org/articles/atmel-AVR-8-bit/print-float-atmel-studio-7/
@@ -72,6 +83,8 @@ int main(void)
 	
 	// max31865 lib settup
 	max31865_register_spi_trx(hal_SPI_trx);
+	max31865_register_chargetime_delay(delay_chargetime);
+	max31865_register_conversiontime_delay(delay_conversiontime);
 	
 	
 	

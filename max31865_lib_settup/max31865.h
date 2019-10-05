@@ -12,6 +12,7 @@
 
 #define NULL_PTR (0)
 #define RTD_CAPACITOR_CHARGETIME_ms (2)
+#define DELAY_63_ms (63)
 
 typedef void (*fptr_t) ();
 typedef uint8_t (*fptr_ret_t)();
@@ -29,6 +30,14 @@ typedef struct {
 void max31865_register_spi_trx(fptr_ret_t cb);
 
 void max31865_unregister_spi_trx();
+
+void max31865_register_chargetime_delay(fptr_t cb);
+
+void max31865_unregister_chargetime_delay();
+
+void max31865_register_conversiontime_delay(fptr_t cb);
+
+void max31865_unregister_conversiontime_delay();
 
 void max31865_configDevice(max31865_t device);
 
