@@ -10,6 +10,7 @@
 #include <util/delay.h>
 #include "max31865.h"
 #include "hal_usart.h"
+#include "hal_spi.h"
 #include <stdio.h>
 
 void usartSettup()
@@ -54,6 +55,9 @@ int main(void)
 	char buff[100];
 	
 	chipSelect_setup();
+	
+	// max31865 lib settup
+	max31865_register_spi_trx(hal_SPI_trx);
 	
 	// device setup
 	max.rtd = 100;

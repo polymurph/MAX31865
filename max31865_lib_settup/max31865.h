@@ -10,10 +10,12 @@
 #define MAX31865_H_
 #include <stdint.h>
 
-typedef void (*fptr_t) ();
+#define NULL_PTR (0)
 
-typedef struct
-{
+typedef void (*fptr_t) ();
+typedef uint8_t (*fptr_ret_t)();
+
+typedef struct {
 	fptr_t selectChip;
 	fptr_t unselectChip;
 	uint16_t rtd;
@@ -23,7 +25,9 @@ typedef struct
 	uint8_t configReg;
 }max31865_t;
 
-//////////////////////////////////////////////////////////////////////////
+void max31865_register_spi_trx(fptr_ret_t cb);
+
+void max31865_unregister_spi_trx();
 
 void max31865_SPIsetup();
 

@@ -6,12 +6,17 @@
  */ 
 #include "max31865.h"
 #include "hal_spi.h"
+//#include "dummy.h"
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
 //////////////////////////////////////////////////////////////////////////
 
 #define RTD_CAPACITOR_CHARGETIME_ms 2
+
+//////////////////////////////////////////////////////////////////////////
+
+static fptr_ret_t spi_trx = NULL_PTR;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -33,11 +38,11 @@ void readNReg(max31865_t device,uint8_t addr, uint8_t *buff, uint8_t n)
 	
 	device.selectChip();
 	
-	hal_SPI_trx(addr);
+	spi_trx(addr);
 	
 	do
 	{
-		buff[index++] = hal_SPI_trx(0xFF);
+		buff[index++] = spi_trx(0xFF);
 	}while(index < n);
 	
 	device.unselectChip();
@@ -56,11 +61,11 @@ void writeNReg(max31865_t device, uint8_t addr,const uint8_t *buff, uint8_t n)
 	
 	device.selectChip();
 	
-	hal_SPI_trx(addr);
+	spi_trx(addr);
 	
 	do
 	{
-		hal_SPI_trx(buff[index++]);
+		spi_trx(buff[index++]);
 		n--;
 	} while (n > 0);
 	
@@ -75,6 +80,16 @@ void writeReg(max31865_t device, uint8_t addr,uint8_t data)
 
 //////////////////////////////////////////////////////////////////////////
 // interface functions
+
+void max31865_register_spi_trx(fptr_ret_t cb)
+{
+	spi_trx = cb;
+}
+
+void max31865_unregister_spi_trx()
+{
+	spi_trx = NULL_PTR;
+}
 
 void max31865_SPIsetup()
 {
