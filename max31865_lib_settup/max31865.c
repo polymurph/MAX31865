@@ -29,10 +29,21 @@ static const float a4 = 0.000000000691;
 static const float a5 = 7.31888555389e-13;
 
 /************************************************
- *	@brief short description
- *	@param	
+ *	@brief Read multiple registers
+ *	@param device
+ *	@param addr register start address
+ *	@param *buff pointer to buffer
+ *	@param 	n buffer size
  *	@return
- *		detailed description
+ *		This function reads multiple regsiters\n
+ *		starting at the designated register set\¨n
+ *      addr. The contetn of each register is\n
+ *		stored in the buffer. The ammount of\n
+ *		registers to be read is defined by n.\n
+ *		After each read the address is automatically\n
+ *		incremented to the next address. See datasheet\n
+ *      for more information regarding register\n
+ *		manipulation.
  *
  *	@todo
  *	@test
@@ -61,9 +72,10 @@ void readNReg(max31865_t device,uint8_t addr, uint8_t *buff, uint8_t n)
 /************************************************
  *	@brief Read Register
  *	@param	device
- *  @param	addr_t
- *	@return uint
- *		detailed description
+ *  @param	addr_t_t
+ *	@return uint8_t
+ *		This function reads the content of a designated\n
+ *		register by addr and returns the content.
  *
  *	@todo
  *	@test
@@ -81,14 +93,14 @@ uint8_t readReg(max31865_t device, uint8_t addr)
 /************************************************
  *	@brief Write n registers
  *	@param device	
- *	@param addr
+ *	@param addr register start address
  *	@param *buff pointer of buffer
  *	@param n buffer size (number of elements)
  *	@return
  *		this function writes multiple registers\n
  *      with the content in buff. the addr is\n
  *      automatically incremented from the set
- *      address (addr) onwards. see datasheet\n
+ *      address (addr) onwards. See datasheet\n
  *      for more information regarding register\n
  *		manipulation.
  *
