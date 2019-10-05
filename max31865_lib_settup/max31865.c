@@ -59,9 +59,10 @@ void readNReg(max31865_t device,uint8_t addr, uint8_t *buff, uint8_t n)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
+ *	@brief Read Register
+ *	@param	device
+ *  @param	addr_t
+ *	@return uint
  *		detailed description
  *
  *	@todo
@@ -78,10 +79,18 @@ uint8_t readReg(max31865_t device, uint8_t addr)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
+ *	@brief Write n registers
+ *	@param device	
+ *	@param addr
+ *	@param *buff pointer of buffer
+ *	@param n buffer size (number of elements)
  *	@return
- *		detailed description
+ *		this function writes multiple registers\n
+ *      with the content in buff. the addr is\n
+ *      automatically incremented from the set
+ *      address (addr) onwards. see datasheet\n
+ *      for more information regarding register\n
+ *		manipulation.
  *
  *	@todo
  *	@test
@@ -108,10 +117,12 @@ void writeNReg(max31865_t device, uint8_t addr,const uint8_t *buff, uint8_t n)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief write one register
+ *	@param device
+ *	@param addr register address
+ *	@param data 
+ *		This function writes data to one register\n
+ *		selected by addr.
  *
  *	@todo
  *	@test
@@ -125,10 +136,11 @@ void writeReg(max31865_t device, uint8_t addr,uint8_t data)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief Register SPI transmit receive function
+ *	@param	function pointer
+ *		This function sets the SPI transmit recive\n
+ *		function pointer to the passed over function\n
+ *		pointer.
  *
  *	@todo
  *	@test
@@ -142,10 +154,11 @@ void max31865_register_spi_trx(fptr_ret_t cb)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief unregister SPI transmit receive fucntion
+ *		This function sets the SPI transmit recive\n
+ *		(trx) function pointer to a zero\n
+ *      pointer defined by NULL_PTR in the\n
+ *		@file max31865.h header file.
  *
  *	@todo
  *	@test
@@ -244,6 +257,21 @@ float max31865_readRTD(max31865_t device)
 	return (((float)(max31865_readADC(device)) * (float)(device.rref))  / (float)(32768));
 }
 
+/************************************************
+ *	@brief Read Temperature in Celsius
+ *	@param	device max31865_t
+ *	@return float °C value
+ *		this function reads the raw ADC value and\n
+ *		and calculates the °C value with the help\n
+ *		of the polynomial approximation of the\n
+ *		RTD curve.
+ *
+ *	@todo
+ *	@test
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 float max31865_readCelsius(max31865_t device)
 {
 	volatile float x = max31865_readRTD(device);
@@ -258,10 +286,12 @@ float max31865_readCelsius(max31865_t device)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief Read Temperature in Kelvin
+ *	@param	device
+ *	@return float K Kelvin
+ *		This function reads the °C value and\n
+ *		and converts it to Kelvin by adding\n
+ *		the constant 273.15 to the °C value.
  *
  *	@todo
  *	@test
@@ -275,10 +305,12 @@ float max31865_readKelvin(max31865_t device)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief Set high fault threshold
+ *	@param	device
+ *	@param  threshold
+ *		This function sets the high fault threshold.\n
+ *		If the raw ADC value goes over the set value\n
+ *		a Fault is generated.
  *
  *	@todo
  *	@test
@@ -299,10 +331,12 @@ void max31865_setHighFaultThreshold(max31865_t device, uint16_t threshold)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief set low fault threshold
+ *	@param device
+ *	@param threshold
+ *		This function sets the low fault threshold.\n
+ *		If the raw ADC value goes under the set value\n
+ *		a Fault is generated.
  *
  *	@todo
  *	@test
@@ -323,10 +357,12 @@ void max31865_setLowFaultThreshold(max31865_t device, uint16_t threshold)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief check for threshold fault
+ *	@param	device
+ *	@return int8_t
+ *		This function checks for threshold fault.\n
+ *		In case of a high fault 1 is returned \n
+ *		and for low fault a -1 and for no fault 0.
  *
  *	@todo
  *	@test
@@ -338,15 +374,11 @@ int8_t max31865_checkThresholdFault(max31865_t device)
 {
 	uint8_t buff = readReg(device,0x07) & ~0x3F;
 	
-	if(buff)
-	{
-		if(buff & ~0x7F)
-		{
+	if(buff) {
+		if(buff & ~0x7F) {
 			// high fault
 			return 1;
-		}
-		else
-		{
+		} else {
 			// low fault
 			return -1;
 		}
@@ -355,10 +387,9 @@ int8_t max31865_checkThresholdFault(max31865_t device)
 }
 
 /************************************************
- *	@brief short description
- *	@param	
- *	@return
- *		detailed description
+ *	@brief clear fault
+ *	@param	device
+ *		This function clears the thresold fault.
  *
  *	@todo
  *	@test
