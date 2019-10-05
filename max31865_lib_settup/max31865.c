@@ -6,27 +6,23 @@
  */ 
 
 #include "max31865.h"
-#include "hal_spi.h"
 //#include "dummy.h"
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
-//////////////////////////////////////////////////////////////////////////
-
-
-
-//////////////////////////////////////////////////////////////////////////
-
-static fptr_ret_t spi_trx = NULL_PTR;
-
-//////////////////////////////////////////////////////////////////////////
+static fptr_ret_t spi_trx = NULL_PTR; /*!< spi_trx callback function*/
 
 // temperature curve polynomial approximation coefficients
-static const float a1 = 2.55865721669;
-static const float a2 = 0.000967360412;
-static const float a3 = 0.000000731467;
-static const float a4 = 0.000000000691;
-static const float a5 = 7.31888555389e-13;
+static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for 
+											temperature curve*/
+static const float a2 = 0.000967360412; /*!< 2. polynomial coeff. for 
+											temperature curve*/
+static const float a3 = 0.000000731467; /*!< 3. polynomial coeff. for 
+											temperature curve*/
+static const float a4 = 0.000000000691; /*!< 4. polynomial coeff. for 
+											temperature curve*/
+static const float a5 = 7.31888555389e-13; /*!< 5. polynomial coeff. for 
+											temperature curve*/
 
 /************************************************
  *	@brief Read multiple registers

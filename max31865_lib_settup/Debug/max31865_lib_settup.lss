@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 000002b8  00000000  00000000  00001e40  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001e13  00000000  00000000  000020f8  2**0
+  6 .debug_info   00001e2c  00000000  00000000  000020f8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000c4a  00000000  00000000  00003f0b  2**0
+  7 .debug_abbrev 00000cbc  00000000  00000000  00003f24  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000fd4  00000000  00000000  00004b55  2**0
+  8 .debug_line   00000fd3  00000000  00000000  00004be0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000009a4  00000000  00000000  00005b2c  2**2
+  9 .debug_frame  000009a4  00000000  00000000  00005bb4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000e2d  00000000  00000000  000064d0  2**0
+ 10 .debug_str    00000e2d  00000000  00000000  00006558  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00001568  00000000  00000000  000072fd  2**0
+ 11 .debug_loc    00001568  00000000  00000000  00007385  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000278  00000000  00000000  00008865  2**0
+ 12 .debug_ranges 00000278  00000000  00000000  000088ed  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1946,7 +1946,10 @@ int main(void)
      e3a:	08 95       	ret
 
 00000e3c <max31865_checkThresholdFault>:
-
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 int8_t max31865_checkThresholdFault(max31865_t device)
 {
      e3c:	af 92       	push	r10
@@ -1974,18 +1977,16 @@ int8_t max31865_checkThresholdFault(max31865_t device)
      e66:	0e 94 e9 03 	call	0x7d2	; 0x7d2 <readReg>
      e6a:	80 7c       	andi	r24, 0xC0	; 192
 	
-	if(buff)
+	if(buff) {
      e6c:	31 f0       	breq	.+12     	; 0xe7a <max31865_checkThresholdFault+0x3e>
-	{
-		if(buff & ~0x7F)
+		if(buff & ~0x7F) {
      e6e:	90 e0       	ldi	r25, 0x00	; 0
      e70:	80 78       	andi	r24, 0x80	; 128
      e72:	89 2b       	or	r24, r25
      e74:	21 f4       	brne	.+8      	; 0xe7e <max31865_checkThresholdFault+0x42>
+			// high fault
 			return 1;
-		}
-		else
-		{
+		} else {
 			// low fault
 			return -1;
      e76:	8f ef       	ldi	r24, 0xFF	; 255
@@ -1995,10 +1996,10 @@ int8_t max31865_checkThresholdFault(max31865_t device)
 	return 0;
      e7a:	80 e0       	ldi	r24, 0x00	; 0
      e7c:	01 c0       	rjmp	.+2      	; 0xe80 <max31865_checkThresholdFault+0x44>
-	if(buff)
-	{
-		if(buff & ~0x7F)
-		{
+	uint8_t buff = readReg(device,0x07) & ~0x3F;
+	
+	if(buff) {
+		if(buff & ~0x7F) {
 			// high fault
 			return 1;
      e7e:	81 e0       	ldi	r24, 0x01	; 1
