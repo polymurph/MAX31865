@@ -30,8 +30,6 @@ void max31865_register_spi_trx(fptr_ret_t cb);
 
 void max31865_unregister_spi_trx();
 
-void max31865_SPIsetup();
-
 void max31865_configDevice(max31865_t device);
 
 uint16_t max31865_readADC(max31865_t device);

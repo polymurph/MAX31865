@@ -91,20 +91,6 @@ void max31865_unregister_spi_trx()
 	spi_trx = NULL_PTR;
 }
 
-void max31865_SPIsetup()
-{
-	cli();
-	hal_SPI_enableModule();
-	hal_SPI_dissableInterrupt();
-	hal_SPI_setMode(MASTER);
-	hal_SPI_setClockRate(clk_CLK_DIV_128);
-	hal_SPI_dataDirectionOrder(MSB_FIRST);
-	hal_SPI_setClockPolarity(NONINVERTED);
-	hal_SPI_setClockPhase(SAMPLE_ON_FALLING_EDGE);
-	hal_SPI_enable_TRX();
-	sei();
-}
-
 void max31865_configDevice(max31865_t device)
 {
 	uint8_t buff[4];
