@@ -2,7 +2,7 @@
  * max31865.h
  *
  * Created: 22-Dec-18 17:30:56
- *  Author: Edwin
+ *  Author: Edwin Koch
  */ 
 
 

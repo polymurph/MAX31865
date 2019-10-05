@@ -2,14 +2,10 @@
  * max31865.c
  *
  * Created: 22-Dec-18 17:31:07
- *  Author: Edwin
+ *  Author: Edwin Koch
  */ 
 
 #include "max31865.h"
-
-// @todo make this lib independent of target device
-//#define F_CPU 16000000UL
-//#include <util/delay.h>
 
 static fptr_ret_t spi_trx = NULL_PTR; /*!< spi_trx callback function*/
 static fptr_t chargetime = NULL_PTR; /*!< chargetimer delay callback function*/
@@ -149,7 +145,7 @@ void writeReg(max31865_t device, uint8_t addr,uint8_t data)
 /************************************************
  *	@brief Register SPI transmit receive function
  *	@param	function pointer
- *		This function sets the SPI transmit recive\n
+ *		This function sets the SPI transmit receive\n
  *		function pointer to the passed over function\n
  *		pointer.
  *
@@ -165,8 +161,8 @@ void max31865_register_spi_trx(fptr_ret_t cb)
 }
 
 /************************************************
- *	@brief unregister SPI transmit receive fucntion
- *		This function sets the SPI transmit recive\n
+ *	@brief unregister SPI transmit receive function\n
+ *		This function sets the SPI transmit receive\n
  *		(trx) function pointer to a zero\n
  *      pointer defined by NULL_PTR in the\n
  *		@file max31865.h header file.
@@ -182,21 +178,73 @@ void max31865_unregister_spi_trx()
 	spi_trx = NULL_PTR;
 }
 
+/************************************************
+ *	@brief Register chargetime delay function
+ *	@param	function pointer
+ *		This function sets the chargetime delay\n
+ *		function pointer to the passed over function\n
+ *		pointer.
+ *
+ *	@todo
+ *	@test
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 void max31865_register_chargetime_delay(fptr_t cb)
 {
 	chargetime = cb;
 }
 
+/************************************************
+ *	@brief unregister chargetime delay function\n
+ *		This function sets the chargetime\n
+ *		function pointer to a zero\n
+ *      pointer defined by NULL_PTR in the\n
+ *		@file max31865.h header file.
+ *
+ *	@todo
+ *	@test
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 void max31865_unregister_chargetime_delay()
 {
 	chargetime = NULL_PTR;
 }
 
+/************************************************
+ *	@brief Register conversiontime delay function
+ *	@param	function pointer
+ *		This function sets the conversiontime delay\n
+ *		function pointer to the passed over function\n
+ *		pointer.
+ *
+ *	@todo
+ *	@test
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 void max31865_register_conversiontime_delay(fptr_t cb)
 {
 	conversiontime = cb;
 }
 
+/************************************************
+ *	@brief unregister conversiontime delay function\n
+ *		This function sets the conversiontime\n
+ *		function pointer to a zero\n
+ *      pointer defined by NULL_PTR in the\n
+ *		@file max31865.h header file.
+ *
+ *	@todo
+ *	@test
+ *	@bug
+ *
+ *	@version 1.0
+ ***********************************************/
 void max31865_unregister_conversiontime_delay()
 {
 	conversiontime = NULL_PTR;
