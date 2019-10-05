@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #define NULL_PTR (0)
+#define RTD_CAPACITOR_CHARGETIME_ms (2)
 
 typedef void (*fptr_t) ();
 typedef uint8_t (*fptr_ret_t)();

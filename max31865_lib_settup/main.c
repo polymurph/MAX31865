@@ -39,6 +39,20 @@ void chipUnselect()
 	PORTB |= (1 << PINB0);
 }
 
+void spi_settup()
+{
+	cli();
+	hal_SPI_enableModule();
+	hal_SPI_dissableInterrupt();
+	hal_SPI_setMode(MASTER);
+	hal_SPI_setClockRate(clk_CLK_DIV_128);
+	hal_SPI_dataDirectionOrder(MSB_FIRST);
+	hal_SPI_setClockPolarity(NONINVERTED);
+	hal_SPI_setClockPhase(SAMPLE_ON_FALLING_EDGE);
+	hal_SPI_enable_TRX();
+	sei();
+}
+
 /*
 	prject settup for sprintf with uint16_t values
 	https://startingelectronics.org/articles/atmel-AVR-8-bit/print-float-atmel-studio-7/
@@ -58,6 +72,9 @@ int main(void)
 	
 	// max31865 lib settup
 	max31865_register_spi_trx(hal_SPI_trx);
+	
+	
+	
 	
 	// device setup
 	max.rtd = 100;
@@ -83,7 +100,8 @@ int main(void)
 	sprintf(buff,"Program: max31865_lib_settup\n\r");
 	hal_USART_puts(buff);
 	
-	max31865_SPIsetup();
+	//max31865_SPIsetup();
+	spi_settup();
 	
 	max31865_configDevice(max);	
 	
