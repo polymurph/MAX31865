@@ -6,7 +6,8 @@
  */ 
 
 #include "max31865.h"
-//#include "dummy.h"
+
+// @todo make this lib independent of target device
 #define F_CPU 16000000UL
 #include <util/delay.h>
 
