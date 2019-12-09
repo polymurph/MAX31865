@@ -16,6 +16,8 @@ static void _write_n_reg(const max31865_t*  device,
 {
     uint8_t index = 0;
 
+    if(len == 0) return;
+
     device->chipselect(true);
 
     device->spi_trx(start_reg_address);
@@ -24,6 +26,23 @@ static void _write_n_reg(const max31865_t*  device,
         device->spi_trx(data[index++]);
     } while(len > 0);
 
+    device->chipselect(false);
+}
+
+static void _read_n_reg(const max31865_t*     device,
+                        uint8_t             start_reg_address,
+                        uint8_t*            data,
+                        uint8_t             len)
+{
+    uint8_t index = 0;
+
+    if(n == 0) return;
+
+    device->chipselect(true);
+    device->spi_trx(start_reg_address);
+    do {
+        buff[index++] = device->spi_trx(0xFF);
+    } while(index < len);
     device->chipselect(false);
 }
 
@@ -56,9 +75,34 @@ void max31865_init(max31865_t*  device,
     buff[2] = (uint8_t)(device->lowFaultThreshold >> 8);
     buff[3] = (uint8_t)(device->lowFaultThreshold);
 
-    _write_n_reg(&device, 0x80, device->configReg, 1);
+    _write_n_reg(&device, 0x80, &(device->configReg), 1);
     _write_n_reg(&device, 0x83, buff, 4);
 }
+
+
+// TODO: test
+uint16_t max31865_readADC(max31865_t* device)
+{
+    uint8_t buff[2];
+
+    // turn on vbias
+    _write_n_reg(device, 0x80, &(device->configReg | 0x80), 1);
+
+    device->charged_time_delay();
+
+    // initiate 1-shot conversion
+    _write_n_reg(device, 0x80, &(device->configReg | 0xA0), 1);
+
+    device->conversion_timer_deay();
+
+    _read_n_reg(device, 0x01, buff, 2);
+
+    // turn off vbias
+    _write_n_reg(device, 0x80, &(device->configReg), 1);
+
+    return (((uint16_t)((buff[0]<<8) | buff[1])) >> 1);
+}
+
 
 
 

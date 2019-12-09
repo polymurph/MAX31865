@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef void (*fptr_t)(void)
+typedef void (*fptr_t)(void);
 typedef void (*fptr_b_t)(bool);
 typedef uint8_t (*u8_fptr_u8_t)(uint8_t);
 
@@ -28,7 +28,11 @@ typedef struct{
 }max31865_t;
 
 
-uint16_t max31865_init(max31865_t*  device,
+void max31865_init(max31865_t*  device,
+                       fptr_b_t chipselect_cb,
+                       u8_fptr_u8_t spi_trx_cb,
+                       fptr_t charged_time_delay_cb,
+                       fptr_t conversion_timer_deay_cb,
                        uint16_t     rtd_ohm,
                        uint16_t     rref_ohm,
                        uint16_t     lowerFaulThreshold,
