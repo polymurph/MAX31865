@@ -104,6 +104,14 @@ uint16_t max31865_readADC(max31865_t* device)
 }
 
 
+// TODO: test
+float max31865_readRTD_ohm(const max31865_t* device)
+{
+    return return (((float)(max31865_readADC(device)) * (float)(device.rref))  / (float)(32768));
+}
+
+
+
 
 
 #if 0
