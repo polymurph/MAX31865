@@ -6,6 +6,63 @@
  */ 
 
 #include "max31865.h"
+#include <stdint.h>
+#include <stdbool.h>
+
+static void _write_n_reg(const max31865_t*  device,
+                         uint8_t            start_reg_address,
+                         uint8_t*           data,
+                         uint8_t            len)
+{
+    uint8_t index = 0;
+
+    device->chipselect(true);
+
+    device->spi_trx(start_reg_address);
+
+    do{
+        device->spi_trx(data[index++]);
+    } while(len > 0);
+
+    device->chipselect(false);
+}
+
+// TODO: test
+void max31865_init(max31865_t*  device,
+                       fptr_b_t chipselect_cb,
+                       u8_fptr_u8_t spi_trx_cb,
+                       fptr_t charged_time_delay_cb,
+                       fptr_t conversion_timer_deay_cb,
+                       uint16_t     rtd_ohm,
+                       uint16_t     rref_ohm,
+                       uint16_t     lowerFaulThreshold,
+                       uint16_t     higherFaultThreshold)
+{
+    uint8_t buff[4];
+
+    // object setup
+    device->chipselect = chipselect_cb;
+    device->spi_trx = spi_trx_cb;
+    device->charged_time_delay = charged_time_delay_cb;
+    device->conversion_timer_deay = conversion_timer_deay_cb;
+    device->rtd = rtd_ohm;
+    device->rref = rref_ohm;
+    device->lowFaultThreshold = lowerFaulThreshold;
+    device->highFaultThreshold = higherFaultThreshold;
+
+    // low and high fault threshold setup
+    buff[0] = (uint8_t)(device->highFaultThreshold >> 8);
+    buff[1] = (uint8_t)(device->highFaultThreshold);
+    buff[2] = (uint8_t)(device->lowFaultThreshold >> 8);
+    buff[3] = (uint8_t)(device->lowFaultThreshold);
+
+    _write_n_reg(&device, 0x80, device->configReg, 1);
+    _write_n_reg(&device, 0x83, buff, 4);
+}
+
+
+
+#if 0
 
 static fptr_ret_t spi_trx = NULL_PTR; /*!< spi_trx callback function*/
 static fptr_t chargetime = NULL_PTR; /*!< chargetimer delay callback function*/
@@ -482,3 +539,4 @@ void max31865_clearFault(max31865_t device)
 {
 	writeReg(device,0x01,device.configReg | 0x02);
 }
+#endif
