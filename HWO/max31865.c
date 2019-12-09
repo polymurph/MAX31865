@@ -110,17 +110,6 @@ float max31865_readRTD_ohm(const max31865_t* device)
     return return (((float)(max31865_readADC(device)) * (float)(device.rref))  / (float)(32768));
 }
 
-#if 0
-volatile float x = max31865_readRTD(device);
-
-//volatile float h = (float)(device.rtd) - x;
-volatile float h = (float)(device.rtd) - x;
-volatile float h2 = h*h;
-volatile float h3 = h2*h;
-volatile float h4 = h2*h2;
-volatile float h5 = h4*h;
-return - (a1*h+a2*h2+a3*h3+a4*h4+a5*h5);
-#endif
 
 // TODO: test
 float max31865_readCelsius(const max31865_t* device)
@@ -129,6 +118,13 @@ float max31865_readCelsius(const max31865_t* device)
     // return celsius calculated with the help of the horners method
     // reduces needed multiplications and additions
     return -(x * (a1 + x(a2 + x * (a3 + x * (a4 + x * a5)))));
+}
+
+
+// TODO: test
+float max31865_readKelvin(const max31865_t* device)
+{
+    return max31865_readCelsius(device) + 273.15;
 }
 
 
