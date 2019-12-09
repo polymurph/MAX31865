@@ -128,6 +128,41 @@ float max31865_readKelvin(const max31865_t* device)
 }
 
 
+// TODO: test
+void max31865_setHighFaultThreshold(max31865_t* device,
+                                    uint16_t    threshold)
+{
+    uint8_t buff[2];
+
+    device->highFaultThreshold = threshold;
+    buff[0] = (uint8_t)(threshold >> 8);
+    buff[1] = (uint8_t)(threshold);
+    _write_n_reg(device, 0x83, buff, 2);
+}
+
+#if 0
+uint8_t buff[2];
+
+device.lowFaultThreshold = threshold;
+
+buff[0] = (uint8_t)(threshold >> 8);
+buff[1] = (uint8_t)(threshold);
+
+writeNReg(device,0x85,buff,2);
+#endif
+
+// TODO: test
+void max31865_setLowFaultThreshold(max31865_t*  device,
+                                   uint16_t     threshold)
+{
+    uint8_t buff[2];
+
+    device->lowFaultThreshold = threshold;
+    buff[0] = (uint8_t)(threshold >> 8);
+    buff[1] = (uint8_t)(threshold);
+    _write_n_reg(device, 0x85, buff, 2);
+}
+
 
 #if 0
 

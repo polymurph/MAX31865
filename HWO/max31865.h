@@ -46,9 +46,11 @@ float max31865_readCelsius(const max31865_t* device);
 
 float max31865_readKelvin(const max31865_t* device);
 
-void max31865_setHighFaultThreshold(max31865_t* device, uint16_t threshold);
+void max31865_setHighFaultThreshold(max31865_t* device,
+                                    uint16_t    threshold);
 
-void max31865_setLowFaultThreshold(max31865_t* device, uint16_t threshold);
+void max31865_setLowFaultThreshold(max31865_t*  device,
+                                   uint16_t     threshold);
 
 int8_t max31865_checkThresholdFault(const max31865_t* device);
 
