@@ -29,14 +29,14 @@ typedef struct{
 
 
 void max31865_init(max31865_t*  device,
-                       fptr_b_t chipselect_cb,
-                       u8_fptr_u8_t spi_trx_cb,
-                       fptr_t charged_time_delay_cb,
-                       fptr_t conversion_timer_deay_cb,
-                       uint16_t     rtd_ohm,
-                       uint16_t     rref_ohm,
-                       uint16_t     lowerFaulThreshold,
-                       uint16_t     higherFaultThreshold);
+                   fptr_b_t     chipselect_cb,
+                   u8_fptr_u8_t spi_trx_cb,
+                   fptr_t       charged_time_delay_cb,
+                   fptr_t       conversion_timer_deay_cb,
+                   uint16_t     rtd_ohm,
+                   uint16_t     rref_ohm,
+                   uint16_t     lowerFaulThreshold,
+                   uint16_t     higherFaultThreshold);
 
 uint16_t max31865_readADC(const max31865_t* device);
 

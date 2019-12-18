@@ -6,12 +6,23 @@
 
 void _chip_select_init(void)
 {
-    // TODO: init chip select pin
+    // Pin 2.1
+    PM5CTL0 &= ~LOCKLPM5;
+
+    P2DIR |= 0x02;
+    P2OUT |= 0x02;
+
+    PM5CTL0 |= LOCKLPM5;
 }
 
 void _chip_select(bool select)
 {
     // TODO: choose chip select pin
+    if(select){
+        P2OUT &= ~0x02;
+    } else {
+        P2OUT |= 0x02;
+    }
 }
 
 void _charge_time_delay()
@@ -41,7 +52,8 @@ int main(void)
                  true);
 
     max31865_init(&Temperature,
-                  _chip_select, hal_spi_trx,
+                  _chip_select,
+                  hal_spi_trx,
                   _charge_time_delay,
                   _conversion_time_delay,
                   1000,
