@@ -38,7 +38,7 @@ void max31865_init(max31865_t*  device,
                        uint16_t     lowerFaulThreshold,
                        uint16_t     higherFaultThreshold);
 
-uint16_t max31865_readADC(max31865_t* device);
+uint16_t max31865_readADC(const max31865_t* device);
 
 float max31865_readRTD_ohm(const max31865_t* device);
 

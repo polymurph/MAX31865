@@ -9,6 +9,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// temperature curve polynomial approximation coefficients
+static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for
+                                            temperature curve*/
+static const float a2 = 0.000967360412; /*!< 2. polynomial coeff. for
+                                            temperature curve*/
+static const float a3 = 0.000000731467; /*!< 3. polynomial coeff. for
+                                            temperature curve*/
+static const float a4 = 0.000000000691; /*!< 4. polynomial coeff. for
+                                            temperature curve*/
+static const float a5 = 7.31888555389e-13; /*!< 5. polynomial coeff. for
+                                            temperature curve*/
+
 static void _write_n_reg(const max31865_t*  device,
                          uint8_t            start_reg_address,
                          uint8_t*           data,
@@ -36,12 +48,12 @@ static void _read_n_reg(const max31865_t*     device,
 {
     uint8_t index = 0;
 
-    if(n == 0) return;
+    if(len == 0) return;
 
     device->chipselect(true);
     device->spi_trx(start_reg_address);
     do {
-        buff[index++] = device->spi_trx(0xFF);
+        data[index++] = device->spi_trx(0xFF);
     } while(index < len);
     device->chipselect(false);
 }
@@ -81,17 +93,19 @@ void max31865_init(max31865_t*  device,
 
 
 // TODO: test
-uint16_t max31865_readADC(max31865_t* device)
+uint16_t max31865_readADC(const max31865_t* device)
 {
     uint8_t buff[2];
-
+    uint8_t temp = 0;
     // turn on vbias
-    _write_n_reg(device, 0x80, &(device->configReg | 0x80), 1);
+    temp = device->configReg | 0x80;
+    _write_n_reg(device, 0x80, &temp, 1);
 
     device->charged_time_delay();
 
     // initiate 1-shot conversion
-    _write_n_reg(device, 0x80, &(device->configReg | 0xA0), 1);
+    temp = device->configReg | 0xA0;
+    _write_n_reg(device, 0x80, &temp, 1);
 
     device->conversion_timer_deay();
 
@@ -107,17 +121,17 @@ uint16_t max31865_readADC(max31865_t* device)
 // TODO: test
 float max31865_readRTD_ohm(const max31865_t* device)
 {
-    return return (((float)(max31865_readADC(device)) * (float)(device.rref))  / (float)(32768));
+    return (((float)(max31865_readADC(device)) * (float)(device->rref))  / (float)(32768));
 }
 
 
 // TODO: test
 float max31865_readCelsius(const max31865_t* device)
 {
-    float x = (float)(device->rtd) - max31865_readADC(device);
+    float x = (float)(device->rtd) - (float)(max31865_readADC(device));
     // return celsius calculated with the help of the horners method
     // reduces needed multiplications and additions
-    return -(x * (a1 + x(a2 + x * (a3 + x * (a4 + x * a5)))));
+    return -(x * (a1 + x * (a2 + x * (a3 + x * (a4 + x * a5)))));
 }
 
 
