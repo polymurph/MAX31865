@@ -5,11 +5,19 @@
  *  Author: Edwin Koch
  */ 
 
+/*
+ *  chipselect: lowactive
+ *  MSB first:  true
+ *
+ */
 
 #ifndef MAX31865_H_
 #define MAX31865_H_
 #include <stdint.h>
 #include <stdbool.h>
+
+#define MAX31865_RTD_CAPACITOR_CHARGETIME_ms (2)
+#define MAX31865_DELAY_63_ms (63)
 
 typedef void (*fptr_t)(void);
 typedef void (*fptr_b_t)(bool);

@@ -93,7 +93,8 @@ uint8_t hal_spi_trx_byte(uint8_t data)
       UCB0IFG = 0;
       UCB0TXBUF = data;
       // poll for receive completion
-      while(UCB0IFG & UCRXIFG);
+      //while(UCB0IFG & UCRXIFG);
+      while(UCB0STATW & UCBUSY);
       return UCB0RXBUF;
 }
 

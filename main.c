@@ -17,7 +17,6 @@ void _chip_select_init(void)
 
 void _chip_select(bool select)
 {
-    // TODO: choose chip select pin
     if(select){
         P2OUT &= ~0x02;
     } else {
@@ -28,36 +27,43 @@ void _chip_select(bool select)
 void _charge_time_delay()
 {
     volatile uint16_t i = 0;
-    for(i = 0; i<0xFFF;i++);
+    for(i = 0; i<0x1FF;i++);
 }
 
 void _conversion_time_delay()
 {
     volatile uint16_t i = 0;
-    for(i = 0; i<0xFFF;i++);
-}
+    for(i = 0; i<0x1FF;i++);
 
+    // TODO: check if plausible: wait until DRDY goes low (active -> conversion completed)
+}
 
 int main(void)
 {
-    uint16_t temp = 0;
+    volatile uint16_t temp = 0;
     max31865_t Temperature;
+
+    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
     _chip_select_init();
 
     hal_spi_init(spi_mode_MASTER,
                  spi_clk_source_ACLK,
-                 spi_clk_mode_2,
+                 spi_clk_mode_1,
                  0,
                  true);
 
+    // init Temperature object
+
+    // void hal_spi_trx(const uint8_t* txblock, uint8_t* rxblock, uint8_t len)
+
     max31865_init(&Temperature,
                   _chip_select,
-                  hal_spi_trx,
+                  hal_spi_trx_byte,
                   _charge_time_delay,
                   _conversion_time_delay,
-                  1000,
-                  400,
+                  100,
+                  430,  // Rref on breakout board
                   0,
                   0xFFFF);
 
@@ -66,7 +72,8 @@ int main(void)
 
 	while(1)
 	{
-
+	    temp = max31865_readADC(&Temperature);
+	    //_charge_time_delay();
 	}
 	
 	return 0;

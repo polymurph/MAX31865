@@ -23,7 +23,7 @@ static const float a5 = 7.31888555389e-13; /*!< 5. polynomial coeff. for
 
 static void _write_n_reg(const max31865_t*  device,
                          uint8_t            start_reg_address,
-                         uint8_t*           data,
+                         const uint8_t*     data,
                          uint8_t            len)
 {
     uint8_t index = 0;
@@ -36,12 +36,12 @@ static void _write_n_reg(const max31865_t*  device,
 
     do{
         device->spi_trx(data[index++]);
-    } while(len > 0);
+    } while(index < len);
 
     device->chipselect(false);
 }
 
-static void _read_n_reg(const max31865_t*     device,
+static void _read_n_reg(const max31865_t*   device,
                         uint8_t             start_reg_address,
                         uint8_t*            data,
                         uint8_t             len)
@@ -59,11 +59,11 @@ static void _read_n_reg(const max31865_t*     device,
 }
 
 // TODO: test
-void max31865_init(max31865_t*  device,
-                       fptr_b_t chipselect_cb,
+void max31865_init(max31865_t*      device,
+                       fptr_b_t     chipselect_cb,
                        u8_fptr_u8_t spi_trx_cb,
-                       fptr_t charged_time_delay_cb,
-                       fptr_t conversion_timer_deay_cb,
+                       fptr_t       charged_time_delay_cb,
+                       fptr_t       conversion_timer_deay_cb,
                        uint16_t     rtd_ohm,
                        uint16_t     rref_ohm,
                        uint16_t     lowerFaulThreshold,
@@ -80,6 +80,7 @@ void max31865_init(max31865_t*  device,
     device->rref = rref_ohm;
     device->lowFaultThreshold = lowerFaulThreshold;
     device->highFaultThreshold = higherFaultThreshold;
+    device->configReg = 0;
 
     // low and high fault threshold setup
     buff[0] = (uint8_t)(device->highFaultThreshold >> 8);
@@ -87,8 +88,8 @@ void max31865_init(max31865_t*  device,
     buff[2] = (uint8_t)(device->lowFaultThreshold >> 8);
     buff[3] = (uint8_t)(device->lowFaultThreshold);
 
-    _write_n_reg(&device, 0x80, &(device->configReg), 1);
-    _write_n_reg(&device, 0x83, buff, 4);
+    _write_n_reg(device, 0x80, &(device->configReg), 1);
+    _write_n_reg(device, 0x83, buff, 4);
 }
 
 
@@ -153,17 +154,6 @@ void max31865_setHighFaultThreshold(max31865_t* device,
     buff[1] = (uint8_t)(threshold);
     _write_n_reg(device, 0x83, buff, 2);
 }
-
-#if 0
-uint8_t buff[2];
-
-device.lowFaultThreshold = threshold;
-
-buff[0] = (uint8_t)(threshold >> 8);
-buff[1] = (uint8_t)(threshold);
-
-writeNReg(device,0x85,buff,2);
-#endif
 
 // TODO: test
 void max31865_setLowFaultThreshold(max31865_t*  device,
