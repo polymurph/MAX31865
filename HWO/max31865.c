@@ -9,6 +9,22 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+enum{
+    REG_READ_CONFIGURATION = 0x00,
+    REG_READ_RTD_MSB,
+    REG_READ_RTD_LSB,
+    REG_READ_HIGH_FAULT_TH_MSB,
+    REG_READ_HIGH_FAULT_TH_LSB,
+    REG_READ_LOW_FAULT_TH_MSB,
+    REG_READ_LOW_FAULT_TH_LSB,
+    REG_READ_FAULT_STATUS,
+    REG_WRITE_CONFIGURATION = 0x80,
+    REG_WRITE_HIGH_FAULT_TH_MSB = 0x83,
+    REG_WRITE_HIGH_FAULT_TH_LSB,
+    REG_WRITE_LOW_FAULT_TH_MSB,
+    REG_WRITE_LOW_FAULT_TH_LSB
+};
+
 // temperature curve polynomial approximation coefficients
 static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for
                                             temperature curve*/
@@ -57,6 +73,21 @@ static void _read_n_reg(const max31865_t*   device,
     } while(index < len);
     device->chipselect(false);
 }
+
+#if 0
+uint8_t buff[4];
+
+// turn off vbias, deactivate auto conversion mode and erase fault status clear bit
+writeReg(device,0x80,device.configReg);
+
+// low and high fault threshold setup
+buff[0] = (uint8_t)(device.highFaultThreshold >> 8);
+buff[1] = (uint8_t)(device.highFaultThreshold);
+buff[2] = (uint8_t)(device.lowFaultThreshold >> 8);
+buff[3] = (uint8_t)(device.lowFaultThreshold);
+
+writeNReg(device,0x83,buff,4);
+#endif
 
 // TODO: test
 void max31865_init(max31865_t*      device,
