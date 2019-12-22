@@ -45,7 +45,7 @@ void max31865_init(max31865_t*  device,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,
                    uint16_t     higherFaultThreshold,
-                   bool         wire_2_or_4,
+                   bool         wire_3,
                    bool         filter_50Hz);
 
 uint16_t max31865_readADC(const max31865_t* device);

@@ -41,6 +41,7 @@ void _conversion_time_delay()
 int main(void)
 {
     volatile uint16_t temp = 0;
+    volatile int8_t status = 0;
     max31865_t Temperature;
 
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
@@ -66,15 +67,19 @@ int main(void)
                   430,  // Rref on breakout board
                   0,
                   0xFFFF,
-                  false,    // 3 wire mode
+                  true,    // 3 wire mode
                   false);
 
     temp = max31865_readADC(&Temperature);
+
+    max31865_setHighFaultThreshold(&Temperature, 0x00FF);
 
 
 	while(1)
 	{
 	    temp = max31865_readADC(&Temperature);
+	    status = max31865_checkThresholdFault(&Temperature);
+	    max31865_clearFault(&Temperature);
 	    //_charge_time_delay();
 	}
 	

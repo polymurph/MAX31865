@@ -87,7 +87,7 @@ static void _read_n_reg(const max31865_t*   device,
     device->chipselect(true);
     device->spi_trx(start_reg_address);
     do {
-        data[index++] = device->spi_trx(0xA5);
+        data[index++] = device->spi_trx(0xFF);
     } while(index < len);
     device->chipselect(false);
 }
@@ -117,7 +117,7 @@ void max31865_init(max31865_t*  device,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,
                    uint16_t     higherFaultThreshold,
-                   bool         wire_2_or_4,
+                   bool         wire_3,
                    bool         filter_50Hz)
 {
     uint8_t buff[4];
@@ -133,7 +133,7 @@ void max31865_init(max31865_t*  device,
     device->lowFaultThreshold = lowerFaulThreshold;
     device->highFaultThreshold = higherFaultThreshold;
     // settup configurations + set a fault status clear (bit auto clear)
-    device->configReg = (uint8_t)((wire_2_or_4 << 4) | (filter_50Hz) | (1 << 1));
+    device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) | (1 << 1));
 
     // low and high fault threshold setup
     buff[0] = (uint8_t)(device->highFaultThreshold >> 8);
@@ -150,7 +150,7 @@ void max31865_init(max31865_t*  device,
 // TODO: test
 uint16_t max31865_readADC(const max31865_t* device)
 {
-    uint8_t buff[2];
+    uint8_t buff[2] = {0,0};
     uint8_t temp = 0;
     // turn on vbias
     temp = device->configReg | 0x80;
@@ -206,7 +206,8 @@ void max31865_setHighFaultThreshold(max31865_t* device,
     device->highFaultThreshold = threshold;
     buff[0] = (uint8_t)(threshold >> 8);
     buff[1] = (uint8_t)(threshold);
-    _write_n_reg(device, 0x83, buff, 2);
+
+    _write_n_reg(device, REG_WRITE_HIGH_FAULT_TH_MSB, buff, 2);
 }
 
 // TODO: test
@@ -219,6 +220,46 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
     buff[0] = (uint8_t)(threshold >> 8);
     buff[1] = (uint8_t)(threshold);
     _write_n_reg(device, 0x85, buff, 2);
+}
+
+#if 0
+uint8_t buff = readReg(device,0x07) & ~0x3F;
+
+if(buff) {
+    if(buff & ~0x7F) {
+        // high fault
+        return 1;
+    } else {
+        // low fault
+        return -1;
+    }
+}
+return 0;
+#endif
+
+int8_t max31865_checkThresholdFault(const max31865_t* device)
+{
+    //uint8_t buff = readReg(device,0x07) & ~0x3F;
+    uint8_t buff = 0;
+    _read_n_reg(device,REG_READ_FAULT_STATUS,&buff,1);
+
+    if(buff & 0xA0) {
+        // high fault
+        if(buff & ~0x7F) return 1;
+        // low fault
+        return -1;
+    }
+    // no fault
+    return 0;
+}
+#if 0
+writeReg(device,0x01,device.configReg | 0x02);
+#endif
+
+void max31865_clearFault(const max31865_t* device)
+{
+    uint8_t temp = (device->configReg | 0x02);
+    _write_n_reg(device,REG_WRITE_CONFIGURATION, &temp, 1);
 }
 
 
