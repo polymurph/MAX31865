@@ -57,6 +57,24 @@ static void _write_n_reg(const max31865_t*  device,
     device->chipselect(false);
 }
 
+#if 0
+uint8_t index = 0;
+
+if(n == 0) return;
+
+device.selectChip();
+
+spi_trx(addr);
+
+do
+{
+    buff[index++] = spi_trx(0xFF);
+}while(index < n);
+
+device.unselectChip();
+
+#endif
+
 static void _read_n_reg(const max31865_t*   device,
                         uint8_t             start_reg_address,
                         uint8_t*            data,
@@ -69,7 +87,7 @@ static void _read_n_reg(const max31865_t*   device,
     device->chipselect(true);
     device->spi_trx(start_reg_address);
     do {
-        data[index++] = device->spi_trx(0xFF);
+        data[index++] = device->spi_trx(0xA5);
     } while(index < len);
     device->chipselect(false);
 }
@@ -99,7 +117,7 @@ void max31865_init(max31865_t*  device,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,
                    uint16_t     higherFaultThreshold,
-                   bool         wire_2_or_4
+                   bool         wire_2_or_4,
                    bool         filter_50Hz)
 {
     uint8_t buff[4];
@@ -115,7 +133,7 @@ void max31865_init(max31865_t*  device,
     device->lowFaultThreshold = lowerFaulThreshold;
     device->highFaultThreshold = higherFaultThreshold;
     // settup configurations + set a fault status clear (bit auto clear)
-    device->configReg = (wire_2_or_4 << 4) | (filter_50Hz) | (1 << 1);
+    device->configReg = (uint8_t)((wire_2_or_4 << 4) | (filter_50Hz) | (1 << 1));
 
     // low and high fault threshold setup
     buff[0] = (uint8_t)(device->highFaultThreshold >> 8);
@@ -140,13 +158,13 @@ uint16_t max31865_readADC(const max31865_t* device)
 
     device->charged_time_delay();
 
-    // initiate 1-shot conversion
+    // initiate 1-shot conversion + vbias
     temp = device->configReg | 0xA0;
     _write_n_reg(device, 0x80, &temp, 1);
 
     device->conversion_timer_deay();
 
-    _read_n_reg(device, 0x01, buff, 2);
+    _read_n_reg(device, REG_READ_RTD_MSB, buff, 2);
 
     // turn off vbias
     _write_n_reg(device, 0x80, &(device->configReg), 1);

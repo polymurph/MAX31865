@@ -27,13 +27,13 @@ void _chip_select(bool select)
 void _charge_time_delay()
 {
     volatile uint16_t i = 0;
-    for(i = 0; i<0x1FF;i++);
+    for(i = 0; i<0x1FFF;i++);
 }
 
 void _conversion_time_delay()
 {
     volatile uint16_t i = 0;
-    for(i = 0; i<0x1FF;i++);
+    for(i = 0; i<0x1FFF;i++);
 
     // TODO: check if plausible: wait until DRDY goes low (active -> conversion completed)
 }
@@ -62,10 +62,12 @@ int main(void)
                   hal_spi_trx_byte,
                   _charge_time_delay,
                   _conversion_time_delay,
-                  100,
+                  1000,
                   430,  // Rref on breakout board
                   0,
-                  0xFFFF);
+                  0xFFFF,
+                  false,    // 3 wire mode
+                  false);
 
     temp = max31865_readADC(&Temperature);
 
