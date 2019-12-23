@@ -57,24 +57,6 @@ static void _write_n_reg(const max31865_t*  device,
     device->chipselect(false);
 }
 
-#if 0
-uint8_t index = 0;
-
-if(n == 0) return;
-
-device.selectChip();
-
-spi_trx(addr);
-
-do
-{
-    buff[index++] = spi_trx(0xFF);
-}while(index < n);
-
-device.unselectChip();
-
-#endif
-
 static void _read_n_reg(const max31865_t*   device,
                         uint8_t             start_reg_address,
                         uint8_t*            data,
@@ -92,22 +74,7 @@ static void _read_n_reg(const max31865_t*   device,
     device->chipselect(false);
 }
 
-#if 0
-uint8_t buff[4];
 
-// turn off vbias, deactivate auto conversion mode and erase fault status clear bit
-writeReg(device,0x80,device.configReg);
-
-// low and high fault threshold setup
-buff[0] = (uint8_t)(device.highFaultThreshold >> 8);
-buff[1] = (uint8_t)(device.highFaultThreshold);
-buff[2] = (uint8_t)(device.lowFaultThreshold >> 8);
-buff[3] = (uint8_t)(device.lowFaultThreshold);
-
-writeNReg(device,0x83,buff,4);
-#endif
-
-// TODO: test
 void max31865_init(max31865_t*  device,
                    fptr_b_t     chipselect_cb,
                    u8_fptr_u8_t spi_trx_cb,
@@ -122,6 +89,7 @@ void max31865_init(max31865_t*  device,
 {
     uint8_t buff[4];
     uint8_t temp = 0;
+    uint16_t temp_1 = 0;
 
     // object setup
     device->chipselect = chipselect_cb;
@@ -136,10 +104,13 @@ void max31865_init(max31865_t*  device,
     device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) | (1 << 1));
 
     // low and high fault threshold setup
-    buff[0] = (uint8_t)(device->highFaultThreshold >> 8);
-    buff[1] = (uint8_t)(device->highFaultThreshold);
-    buff[2] = (uint8_t)(device->lowFaultThreshold >> 8);
-    buff[3] = (uint8_t)(device->lowFaultThreshold);
+
+    temp_1 = device->highFaultThreshold << 1;
+    buff[0] = (uint8_t)(temp_1);
+    buff[1] = (uint8_t)(temp_1 >> 8);
+    temp_1 = device->lowFaultThreshold << 1;
+    buff[2] = (uint8_t)(temp_1);
+    buff[3] = (uint8_t)(temp_1 >> 8);
 
     temp = device->configReg;
     _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
@@ -147,7 +118,6 @@ void max31865_init(max31865_t*  device,
 }
 
 
-// TODO: test
 uint16_t max31865_readADC(const max31865_t* device)
 {
     uint8_t buff[2] = {0,0};
@@ -173,7 +143,6 @@ uint16_t max31865_readADC(const max31865_t* device)
 }
 
 
-// TODO: test
 float max31865_readRTD_ohm(const max31865_t* device)
 {
     return (((float)(max31865_readADC(device)) * (float)(device->rref))  / 32768.0);
@@ -200,8 +169,10 @@ void max31865_setHighFaultThreshold(max31865_t* device,
                                     uint16_t    threshold)
 {
     uint8_t buff[2];
+    uint16_t temp = 0;
 
     device->highFaultThreshold = threshold;
+    temp = threshold << 1;
     buff[0] = (uint8_t)(threshold >> 8);
     buff[1] = (uint8_t)(threshold);
 
@@ -215,25 +186,10 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
     uint8_t buff[2];
 
     device->lowFaultThreshold = threshold;
-    buff[0] = (uint8_t)(threshold >> 8);
-    buff[1] = (uint8_t)(threshold);
+    buff[0] = (uint8_t)(threshold >> 7);
+    buff[1] = (uint8_t)(threshold << 1);
     _write_n_reg(device, 0x85, buff, 2);
 }
-
-#if 0
-uint8_t buff = readReg(device,0x07) & ~0x3F;
-
-if(buff) {
-    if(buff & ~0x7F) {
-        // high fault
-        return 1;
-    } else {
-        // low fault
-        return -1;
-    }
-}
-return 0;
-#endif
 
 int8_t max31865_checkThresholdFault(const max31865_t* device)
 {
@@ -241,18 +197,19 @@ int8_t max31865_checkThresholdFault(const max31865_t* device)
     uint8_t buff = 0;
     _read_n_reg(device,REG_READ_FAULT_STATUS,&buff,1);
 
-    if(buff & 0xA0) {
-        // high fault
-        if(buff & ~0x7F) return 1;
-        // low fault
-        return -1;
-    }
+    if(buff & max31865_err_RTD_HIGH_THRESHOLD) return 1;
+    if(buff & max31865_err_RTD_LOW_THRESHOLD) return -1;
+
     // no fault
     return 0;
 }
-#if 0
-writeReg(device,0x01,device.configReg | 0x02);
-#endif
+
+uint8_t max31865_readFault(const max31865_t* device)
+{
+    uint8_t buff = 0;
+    _read_n_reg(device,REG_READ_FAULT_STATUS,&buff,1);
+    return buff;
+}
 
 void max31865_clearFault(const max31865_t* device)
 {

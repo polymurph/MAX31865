@@ -23,6 +23,15 @@ typedef void (*fptr_t)(void);
 typedef void (*fptr_b_t)(bool);
 typedef uint8_t (*u8_fptr_u8_t)(uint8_t);
 
+typedef enum{
+    max31865_err_VOLTAGE_FAULT = 0x04,
+    max31865_err_VRTDIN_TO_LOW = 0x08,
+    max31865_err_VREFIN_TO_LOW = 0x10,
+    max31865_err_VREFIN_TO_HIGH = 0x20,
+    max31865_err_RTD_LOW_THRESHOLD = 0x40,
+    max31865_err_RTD_HIGH_THRESHOLD = 0x80
+}max31865_err_t;
+
 typedef struct{
     fptr_b_t chipselect;
     u8_fptr_u8_t spi_trx;
@@ -63,6 +72,8 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
                                    uint16_t     threshold);
 
 int8_t max31865_checkThresholdFault(const max31865_t* device);
+
+uint8_t max31865_readFault(const max31865_t* device);
 
 void max31865_clearFault(const max31865_t* device);
 
