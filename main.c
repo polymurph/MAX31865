@@ -42,6 +42,9 @@ int main(void)
 {
     volatile uint16_t temp = 0;
     volatile int8_t status = 0;
+    volatile float rtd_ohm = 0.0;
+    volatile float celsius = 0.0;
+
     max31865_t Temperature;
 
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
@@ -63,10 +66,10 @@ int main(void)
                   hal_spi_trx_byte,
                   _charge_time_delay,
                   _conversion_time_delay,
-                  1000,
+                  100,
                   430,  // Rref on breakout board
                   0,
-                  0xFFFF,
+                  0x0FFF,
                   true,    // 3 wire mode
                   false);
 
@@ -79,6 +82,10 @@ int main(void)
 	{
 	    temp = max31865_readADC(&Temperature);
 	    status = max31865_checkThresholdFault(&Temperature);
+	    rtd_ohm = max31865_readRTD_ohm(&Temperature);
+	    celsius = max31865_readCelsius(&Temperature);
+
+
 	    max31865_clearFault(&Temperature);
 	    //_charge_time_delay();
 	}
