@@ -44,6 +44,7 @@ int main(void)
     volatile int8_t status = 0;
     volatile float rtd_ohm = 0.0;
     volatile float celsius = 0.0;
+    volatile float kelvin = 0.0;
 
     max31865_t Temperature;
 
@@ -75,7 +76,8 @@ int main(void)
 
     temp = max31865_readADC(&Temperature);
 
-    max31865_setHighFaultThreshold(&Temperature, 0x00FF);
+    max31865_setHighFaultThreshold(&Temperature, 5000);
+    max31865_setLowFaultThreshold(&Temperature, 1000);
 
 
 	while(1)
@@ -84,7 +86,7 @@ int main(void)
 	    status = max31865_checkThresholdFault(&Temperature);
 	    rtd_ohm = max31865_readRTD_ohm(&Temperature);
 	    celsius = max31865_readCelsius(&Temperature);
-
+	    kelvin = max31865_readKelvin(&Temperature);
 
 	    max31865_clearFault(&Temperature);
 	    //_charge_time_delay();
