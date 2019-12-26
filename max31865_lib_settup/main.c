@@ -121,24 +121,25 @@ int main(void)
 	
     while (1) 
     {
-		
+		/*
 		sprintf(buff,"\n\r-----------------------------------");
 		hal_USART_puts(buff);
-		
+		*/
 		
 		
 		adcbuff = max31865_readADC(max);
-		sprintf(buff,"\n\radc: %u",adcbuff);
+		sprintf(buff,"\n\r$%d;",adcbuff);
 		hal_USART_puts(buff);
 		
+		/*
 		
 		
 		rtdbuff = max31865_readRTD(max);
 		sprintf(buff,"\n\rrtd: %f",rtdbuff);
 		hal_USART_puts(buff);
+		*/
 		
-		
-		
+		/*
 		tempC = max31865_readCelsius(max);
 		sprintf(buff,"\n\rCelsius: %f",tempC);
 		hal_USART_puts(buff);
@@ -160,7 +161,7 @@ int main(void)
 		thfault = max31865_checkThresholdFault(max);
 		sprintf(buff,"\n\rThreshold Fault:%d",thfault);
 		hal_USART_puts(buff);
-		
+		*/
 		
 		_delay_ms(500);
     }
