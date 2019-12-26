@@ -33,7 +33,7 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
                               hal_spi.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
-                              max31865.o (__do_clear_bss)
+                              hal_timer0.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libprintf_flt.a(vfprintf_flt.o) (__prologue_saves__)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
@@ -74,6 +74,35 @@ Discarded input sections
                 0x00000000       0x10 hal_spi.o
  .text.hal_SPI_unregisterTransferCompletionCallback
                 0x00000000       0x14 hal_spi.o
+ .text          0x00000000        0x0 hal_timer0.o
+ .data          0x00000000        0x0 hal_timer0.o
+ .bss           0x00000000        0x0 hal_timer0.o
+ .text.hal_timer0_dissableModule
+                0x00000000        0xc hal_timer0.o
+ .text.hal_timer0_overflow_unregisterCB
+                0x00000000       0x1c hal_timer0.o
+ .text.hal_timer0_overflow_registerCB
+                0x00000000       0x14 hal_timer0.o
+ .text.hal_timer0_overflow_enableCBroutine
+                0x00000000        0x8 hal_timer0.o
+ .text.hal_timer0_overflow_dissableCBroutine
+                0x00000000        0x6 hal_timer0.o
+ .text.hal_timer0_compareMatch_unregisterCBA
+                0x00000000       0x1c hal_timer0.o
+ .text.hal_timer0_compareMatch_registerCBA
+                0x00000000       0x14 hal_timer0.o
+ .text.hal_timer0_compreMatch_enableCBroutineA
+                0x00000000        0x8 hal_timer0.o
+ .text.hal_timer0_compreMatch_dissableCBroutineA
+                0x00000000        0x6 hal_timer0.o
+ .text.hal_timer0_compareMatch_unregisterCBB
+                0x00000000       0x1c hal_timer0.o
+ .text.hal_timer0_compareMatch_registerCBB
+                0x00000000       0x14 hal_timer0.o
+ .text.hal_timer0_compreMatch_enableCBroutineB
+                0x00000000        0x8 hal_timer0.o
+ .text.hal_timer0_compreMatch_dissableCBroutineB
+                0x00000000        0x6 hal_timer0.o
  .text          0x00000000        0x0 hal_usart.o
  .data          0x00000000        0x0 hal_usart.o
  .bss           0x00000000        0x0 hal_usart.o
@@ -130,6 +159,10 @@ Discarded input sections
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
+ .text.timer0_CTC_PWM
+                0x00000000       0x2a main.o
+ .text.timer0_Normal_PWM
+                0x00000000       0x2a main.o
  .text          0x00000000        0x0 max31865.o
  .data          0x00000000        0x0 max31865.o
  .bss           0x00000000        0x0 max31865.o
@@ -343,6 +376,7 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
 LOAD hal_spi.o
+LOAD hal_timer0.o
 LOAD hal_usart.o
 LOAD main.o
 LOAD max31865.o
@@ -454,7 +488,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x14d4
+.text           0x00000000     0x1674
  *(.vectors)
  .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -532,11 +566,8 @@ END GROUP
                 0x000001a4                __vector_9
                 0x000001a4                __vector_2
                 0x000001a4                __vector_21
-                0x000001a4                __vector_15
                 0x000001a4                __vector_8
-                0x000001a4                __vector_14
                 0x000001a4                __vector_10
-                0x000001a4                __vector_16
                 0x000001a8                . = ALIGN (0x2)
  *(.text.*)
  .text.dummy    0x000001a8        0x2 hal_spi.o
@@ -570,116 +601,150 @@ END GROUP
  .text.__vector_17
                 0x00000262       0x4e hal_spi.o
                 0x00000262                __vector_17
- .text.dummy    0x000002b0        0x2 hal_usart.o
+ .text.dummy    0x000002b0        0x2 hal_timer0.o
+ .text.hal_timer0_enableModule
+                0x000002b2        0xc hal_timer0.o
+                0x000002b2                hal_timer0_enableModule
+ .text.hal_timer0_setMode
+                0x000002be       0x20 hal_timer0.o
+                0x000002be                hal_timer0_setMode
+ .text.hal_timer0_setCompareValueA
+                0x000002de        0x4 hal_timer0.o
+                0x000002de                hal_timer0_setCompareValueA
+ .text.hal_timer0_setCompareValueB
+                0x000002e2        0x4 hal_timer0.o
+                0x000002e2                hal_timer0_setCompareValueB
+ .text.hal_timer0_setOutputA
+                0x000002e6       0x12 hal_timer0.o
+                0x000002e6                hal_timer0_setOutputA
+ .text.hal_timer0_setOutputB
+                0x000002f8       0x12 hal_timer0.o
+                0x000002f8                hal_timer0_setOutputB
+ .text.hal_timer0_setClockSource
+                0x0000030a       0x16 hal_timer0.o
+                0x0000030a                hal_timer0_setClockSource
+ .text.__vector_14
+                0x00000320       0x56 hal_timer0.o
+                0x00000320                __vector_14
+ .text.__vector_15
+                0x00000376       0x56 hal_timer0.o
+                0x00000376                __vector_15
+ .text.__vector_16
+                0x000003cc       0x56 hal_timer0.o
+                0x000003cc                __vector_16
+ .text.dummy    0x00000422        0x2 hal_usart.o
  .text.hal_USART_enableModule
-                0x000002b2        0xc hal_usart.o
-                0x000002b2                hal_USART_enableModule
+                0x00000424        0xc hal_usart.o
+                0x00000424                hal_USART_enableModule
  .text.hal_USART_TxEnable
-                0x000002be        0xc hal_usart.o
-                0x000002be                hal_USART_TxEnable
+                0x00000430        0xc hal_usart.o
+                0x00000430                hal_USART_TxEnable
  .text.hal_USART_setCharSize
-                0x000002ca       0x20 hal_usart.o
-                0x000002ca                hal_USART_setCharSize
+                0x0000043c       0x20 hal_usart.o
+                0x0000043c                hal_USART_setCharSize
  .text.hal_USART_setBaudRate
-                0x000002ea       0x54 hal_usart.o
-                0x000002ea                hal_USART_setBaudRate
+                0x0000045c       0x54 hal_usart.o
+                0x0000045c                hal_USART_setBaudRate
  .text.hal_USART_putc
-                0x0000033e       0x10 hal_usart.o
-                0x0000033e                hal_USART_putc
+                0x000004b0       0x10 hal_usart.o
+                0x000004b0                hal_USART_putc
  .text.hal_USART_puts
-                0x0000034e       0x1e hal_usart.o
-                0x0000034e                hal_USART_puts
+                0x000004c0       0x1e hal_usart.o
+                0x000004c0                hal_USART_puts
  .text.__vector_18
-                0x0000036c       0x4e hal_usart.o
-                0x0000036c                __vector_18
+                0x000004de       0x4e hal_usart.o
+                0x000004de                __vector_18
  .text.__vector_19
-                0x000003ba       0x4e hal_usart.o
-                0x000003ba                __vector_19
+                0x0000052c       0x4e hal_usart.o
+                0x0000052c                __vector_19
  .text.__vector_20
-                0x00000408       0x4e hal_usart.o
-                0x00000408                __vector_20
+                0x0000057a       0x4e hal_usart.o
+                0x0000057a                __vector_20
  .text.chipSelect
-                0x00000456        0x4 main.o
-                0x00000456                chipSelect
+                0x000005c8        0x4 main.o
+                0x000005c8                chipSelect
  .text.chipUnselect
-                0x0000045a        0x4 main.o
-                0x0000045a                chipUnselect
+                0x000005cc        0x4 main.o
+                0x000005cc                chipUnselect
  .text.delay_chargetime
-                0x0000045e        0xe main.o
-                0x0000045e                delay_chargetime
+                0x000005d0        0xe main.o
+                0x000005d0                delay_chargetime
  .text.delay_conversiontime
-                0x0000046c       0x14 main.o
-                0x0000046c                delay_conversiontime
+                0x000005de       0x14 main.o
+                0x000005de                delay_conversiontime
  .text.usartSettup
-                0x00000480       0x20 main.o
-                0x00000480                usartSettup
+                0x000005f2       0x20 main.o
+                0x000005f2                usartSettup
  .text.chipSelect_setup
-                0x000004a0        0x6 main.o
-                0x000004a0                chipSelect_setup
+                0x00000612        0x6 main.o
+                0x00000612                chipSelect_setup
  .text.spi_settup
-                0x000004a6       0x30 main.o
-                0x000004a6                spi_settup
- .text.main     0x000004d6      0x124 main.o
-                0x000004d6                main
+                0x00000618       0x30 main.o
+                0x00000618                spi_settup
+ .text.timer0_Fast_PWM
+                0x00000648       0x2a main.o
+                0x00000648                timer0_Fast_PWM
+ .text.main     0x00000672      0x128 main.o
+                0x00000672                main
  .text.readNReg
-                0x000005fa       0xa2 max31865.o
-                0x000005fa                readNReg
+                0x0000079a       0xa2 max31865.o
+                0x0000079a                readNReg
  .text.writeNReg
-                0x0000069c       0x8e max31865.o
-                0x0000069c                writeNReg
+                0x0000083c       0x8e max31865.o
+                0x0000083c                writeNReg
  .text.writeReg
-                0x0000072a       0x90 max31865.o
-                0x0000072a                writeReg
+                0x000008ca       0x90 max31865.o
+                0x000008ca                writeReg
  .text.max31865_register_spi_trx
-                0x000007ba        0xa max31865.o
-                0x000007ba                max31865_register_spi_trx
+                0x0000095a        0xa max31865.o
+                0x0000095a                max31865_register_spi_trx
  .text.max31865_register_chargetime_delay
-                0x000007c4        0xa max31865.o
-                0x000007c4                max31865_register_chargetime_delay
+                0x00000964        0xa max31865.o
+                0x00000964                max31865_register_chargetime_delay
  .text.max31865_register_conversiontime_delay
-                0x000007ce        0xa max31865.o
-                0x000007ce                max31865_register_conversiontime_delay
+                0x0000096e        0xa max31865.o
+                0x0000096e                max31865_register_conversiontime_delay
  .text.max31865_configDevice
-                0x000007d8       0xca max31865.o
-                0x000007d8                max31865_configDevice
+                0x00000978       0xca max31865.o
+                0x00000978                max31865_configDevice
  .text.max31865_readADC
-                0x000008a2      0x12e max31865.o
-                0x000008a2                max31865_readADC
+                0x00000a42      0x12e max31865.o
+                0x00000a42                max31865_readADC
  .text.avr-libc
-                0x000009d0      0x6fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libprintf_flt.a(vfprintf_flt.o)
-                0x000009d0                vfprintf
+                0x00000b70      0x6fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libprintf_flt.a(vfprintf_flt.o)
+                0x00000b70                vfprintf
  .text.libgcc.div
-                0x000010ca       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
-                0x000010ca                __udivmodsi4
+                0x0000126a       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodsi4.o)
+                0x0000126a                __udivmodsi4
  .text.libgcc.prologue
-                0x0000110e       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
-                0x0000110e                __prologue_saves__
+                0x000012ae       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
+                0x000012ae                __prologue_saves__
  .text.libgcc.prologue
-                0x00001146       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
-                0x00001146                __epilogue_restores__
+                0x000012e6       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
+                0x000012e6                __epilogue_restores__
  .text.avr-libc
-                0x0000117c      0x1b0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
-                0x0000117c                __ftoa_engine
+                0x0000131c      0x1b0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ftoa_engine.o)
+                0x0000131c                __ftoa_engine
  .text.avr-libc
-                0x0000132c       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
-                0x0000132c                strnlen_P
+                0x000014cc       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
+                0x000014cc                strnlen_P
  .text.avr-libc
-                0x00001342       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen.o)
-                0x00001342                strnlen
+                0x000014e2       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen.o)
+                0x000014e2                strnlen
  .text.avr-libc
-                0x00001358       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fputc.o)
-                0x00001358                fputc
+                0x000014f8       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fputc.o)
+                0x000014f8                fputc
  .text.avr-libc
-                0x000013d0       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(sprintf.o)
-                0x000013d0                sprintf
+                0x00001570       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(sprintf.o)
+                0x00001570                sprintf
  .text.avr-libc
-                0x00001414       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
-                0x00001414                __ultoa_invert
-                0x000014d0                . = ALIGN (0x2)
+                0x000015b4       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
+                0x000015b4                __ultoa_invert
+                0x00001670                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000014d0        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000014d0                _exit
-                0x000014d0                exit
+ .fini9         0x00001670        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00001670                _exit
+                0x00001670                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -698,51 +763,69 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000014d0        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00001670        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000014d4                _etext = .
+                0x00001674                _etext = .
 
-.data           0x00800100       0x34 load address 0x000014d4
+.data           0x00800100       0x3a load address 0x00001674
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  .data.callback
                 0x00800100        0x2 hal_spi.o
+ .data.t0_compareMatchBCallBack
+                0x00800102        0x2 hal_timer0.o
+                0x00800102                t0_compareMatchBCallBack
+ .data.t0_compareMatchACallBack
+                0x00800104        0x2 hal_timer0.o
+                0x00800104                t0_compareMatchACallBack
+ .data.t0_overflowCallBack
+                0x00800106        0x2 hal_timer0.o
+                0x00800106                t0_overflowCallBack
  .data.txCallback
-                0x00800102        0x2 hal_usart.o
+                0x00800108        0x2 hal_usart.o
  .data.dataRegEmptyCallback
-                0x00800104        0x2 hal_usart.o
+                0x0080010a        0x2 hal_usart.o
  .data.rxCallback
-                0x00800106        0x2 hal_usart.o
+                0x0080010c        0x2 hal_usart.o
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800108       0x2c main.o
+                0x0080010e       0x2c main.o
  *(.gnu.linkonce.r*)
-                0x00800134                . = ALIGN (0x2)
-                0x00800134                _edata = .
-                0x00800134                PROVIDE (__data_end, .)
+                0x0080013a                . = ALIGN (0x2)
+                0x0080013a                _edata = .
+                0x0080013a                PROVIDE (__data_end, .)
 
-.bss            0x00800134        0x6
-                0x00800134                PROVIDE (__bss_start, .)
+.bss            0x0080013a        0x9
+                0x0080013a                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.t0_compareMatchEnableRoutineB_FLG
+                0x0080013a        0x1 hal_timer0.o
+                0x0080013a                t0_compareMatchEnableRoutineB_FLG
+ .bss.t0_compareMatchEnableRoutineA_FLG
+                0x0080013b        0x1 hal_timer0.o
+                0x0080013b                t0_compareMatchEnableRoutineA_FLG
+ .bss.t0_overflowEnbaleRoutine_FLG
+                0x0080013c        0x1 hal_timer0.o
+                0x0080013c                t0_overflowEnbaleRoutine_FLG
  .bss.conversiontime
-                0x00800134        0x2 max31865.o
+                0x0080013d        0x2 max31865.o
  .bss.chargetime
-                0x00800136        0x2 max31865.o
- .bss.spi_trx   0x00800138        0x2 max31865.o
+                0x0080013f        0x2 max31865.o
+ .bss.spi_trx   0x00800141        0x2 max31865.o
  *(COMMON)
-                0x0080013a                PROVIDE (__bss_end, .)
-                0x000014d4                __data_load_start = LOADADDR (.data)
-                0x00001508                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800143                PROVIDE (__bss_end, .)
+                0x00001674                __data_load_start = LOADADDR (.data)
+                0x000016ae                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080013a        0x0
+.noinit         0x00800143        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x0080013a                _end = .
+                0x00800143                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -786,6 +869,7 @@ END GROUP
  *(.comment)
  .comment       0x00000000       0x30 hal_spi.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 hal_timer0.o
  .comment       0x00000030       0x31 hal_usart.o
  .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 max31865.o
@@ -814,69 +898,78 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x2e8
+.debug_aranges  0x00000000      0x3d8
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0xb0 hal_spi.o
  .debug_aranges
-                0x000000b0      0x130 hal_usart.o
+                0x000000b0       0xd8 hal_timer0.o
  .debug_aranges
-                0x000001e0       0x58 main.o
+                0x00000188      0x130 hal_usart.o
  .debug_aranges
-                0x00000238       0xb0 max31865.o
+                0x000002b8       0x70 main.o
+ .debug_aranges
+                0x00000328       0xb0 max31865.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1deb
+.debug_info     0x00000000     0x2550
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_info    0x000005f4      0x398 hal_spi.o
- .debug_info    0x0000098c      0x5cb hal_usart.o
- .debug_info    0x00000f57      0x693 main.o
- .debug_info    0x000015ea      0x801 max31865.o
+ .debug_info    0x0000098c      0x48c hal_timer0.o
+ .debug_info    0x00000e18      0x5cb hal_usart.o
+ .debug_info    0x000013e3      0x96c main.o
+ .debug_info    0x00001d4f      0x801 max31865.o
 
-.debug_abbrev   0x00000000      0xcbe
+.debug_abbrev   0x00000000      0xdb6
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x114 hal_spi.o
- .debug_abbrev  0x000006b6      0x14f hal_usart.o
- .debug_abbrev  0x00000805      0x220 main.o
- .debug_abbrev  0x00000a25      0x299 max31865.o
+ .debug_abbrev  0x000006b6       0xf8 hal_timer0.o
+ .debug_abbrev  0x000007ae      0x14f hal_usart.o
+ .debug_abbrev  0x000008fd      0x220 main.o
+ .debug_abbrev  0x00000b1d      0x299 max31865.o
 
-.debug_line     0x00000000      0xf3e
+.debug_line     0x00000000     0x13bd
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x133 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_line    0x00000133      0x2ec hal_spi.o
- .debug_line    0x0000041f      0x4ad hal_usart.o
- .debug_line    0x000008cc      0x2cd main.o
- .debug_line    0x00000b99      0x3a5 max31865.o
+ .debug_line    0x0000041f      0x3b8 hal_timer0.o
+ .debug_line    0x000007d7      0x4ad hal_usart.o
+ .debug_line    0x00000c84      0x394 main.o
+ .debug_line    0x00001018      0x3a5 max31865.o
 
-.debug_frame    0x00000000      0xa04
+.debug_frame    0x00000000      0xca0
  *(.debug_frame)
  .debug_frame   0x00000000      0x18c hal_spi.o
- .debug_frame   0x0000018c      0x328 hal_usart.o
- .debug_frame   0x000004b4       0xa4 main.o
- .debug_frame   0x00000558      0x4ac max31865.o
+ .debug_frame   0x0000018c      0x26c hal_timer0.o
+ .debug_frame   0x000003f8      0x328 hal_usart.o
+ .debug_frame   0x00000720       0xd4 main.o
+ .debug_frame   0x000007f4      0x4ac max31865.o
 
-.debug_str      0x00000000      0xf5f
+.debug_str      0x00000000     0x14f6
  *(.debug_str)
  .debug_str     0x00000000      0x208 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.209/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x446 hal_spi.o
+ .debug_str     0x00000208      0x421 hal_spi.o
                                 0x496 (size before relaxing)
- .debug_str     0x0000064e      0x4e3 hal_usart.o
+ .debug_str     0x00000629      0x5ff hal_timer0.o
+                                0x74b (size before relaxing)
+ .debug_str     0x00000c28      0x4e3 hal_usart.o
                                 0x6a4 (size before relaxing)
- .debug_str     0x00000b31      0x23f main.o
-                                0x5c3 (size before relaxing)
- .debug_str     0x00000d70      0x1ef max31865.o
+ .debug_str     0x0000110b      0x1fc main.o
+                                0x884 (size before relaxing)
+ .debug_str     0x00001307      0x1ef max31865.o
                                 0x446 (size before relaxing)
 
-.debug_loc      0x00000000     0x13f0
+.debug_loc      0x00000000     0x1711
  *(.debug_loc)
  .debug_loc     0x00000000      0x1dd hal_spi.o
- .debug_loc     0x000001dd      0x3dc hal_usart.o
- .debug_loc     0x000005b9       0xfa main.o
- .debug_loc     0x000006b3      0xd3d max31865.o
+ .debug_loc     0x000001dd      0x321 hal_timer0.o
+ .debug_loc     0x000004fe      0x3dc hal_usart.o
+ .debug_loc     0x000008da       0xfa main.o
+ .debug_loc     0x000009d4      0xd3d max31865.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -896,12 +989,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x2a8
+.debug_ranges   0x00000000      0x388
  *(.debug_ranges)
  .debug_ranges  0x00000000       0xa0 hal_spi.o
- .debug_ranges  0x000000a0      0x120 hal_usart.o
- .debug_ranges  0x000001c0       0x48 main.o
- .debug_ranges  0x00000208       0xa0 max31865.o
+ .debug_ranges  0x000000a0       0xc8 hal_timer0.o
+ .debug_ranges  0x00000168      0x120 hal_usart.o
+ .debug_ranges  0x00000288       0x60 main.o
+ .debug_ranges  0x000002e8       0xa0 max31865.o
 
 .debug_macro
  *(.debug_macro)

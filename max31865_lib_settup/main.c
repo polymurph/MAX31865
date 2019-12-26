@@ -11,6 +11,7 @@
 #include "max31865.h"
 #include "hal_usart.h"
 #include "hal_spi.h"
+#include "hal_timer0.h"
 #include <stdio.h>
 
 
@@ -64,6 +65,96 @@ void delay_conversiontime()
 	_delay_ms(63);
 }
 
+void timer0_CTC_PWM()
+{	
+	hal_timer0_enableModule();
+	// this code sets up counter0 for an 8kHz Fast PWM wave @ 16Mhz Clock
+	// based on https://sites.google.com/site/qeewiki/books/avr-guide/pwm-on-the-atmega328
+	
+	// PD6 is now output A
+	//DDRD |= (1 << DDD6);
+	
+	// PD5 is now output B
+	//DDRD |= (1 << DDD5);
+
+	/*
+		OCR0A is the leading register. if the counter reaches the OCR0A value the timer is reset.
+		OCR0B just determines the counter compare value for output B. A match will not reset the timer.
+		If the OCR0B value is higher than OCR0A the output B will will never be toggled hence the timer is reset 
+		after a compare match with the OCR0A
+	*/
+	//OCR0A = 255;
+	//OCR0B = 50;
+	hal_timer0_setCompareValueA(100);
+	hal_timer0_setCompareValueB(25);
+
+	// set non-inverting mode (can only run like this in CTC mode) for output B 
+	//TCCR0A |= (1 << COM0B0);
+	hal_timer0_setOutputB(t0_outB_TOGGLE_ON_COMPARE);
+	
+	// set inverting mode for output A
+	//TCCR0A |= (1 << COM0A0);
+	hal_timer0_setOutputA(t0_outA_TOGGLE_ON_COMPARE);
+	
+	//TCCR0A |= (1 << WGM01);
+	hal_timer0_setMode(t0_mode_CTC);
+
+	//TCCR0B |= (1 << CS01);
+	hal_timer0_setClockSource(t0_clk_CLK_DIV_8);
+	// set prescaler to 8 and starts PWM
+}
+
+void timer0_Fast_PWM()
+{
+	hal_timer0_enableModule();
+	// this code sets up counter0 for an 8kHz Fast PWM wave @ 16Mhz Clock
+	// based on https://sites.google.com/site/qeewiki/books/avr-guide/pwm-on-the-atmega328
+	
+	// PD6 is now output A
+	//DDRD |= (1 << DDD6);
+	
+	// PD5 is now output B
+	//DDRD |= (1 << DDD5);
+
+	// set PWM duty cycle 50% for output A
+	//OCR0A = 128;
+	hal_timer0_setCompareValueA(128);
+	
+	// set PWM duty cycle 25% for output B
+	//OCR0B = 64;
+	hal_timer0_setCompareValueB(64);
+
+	// set none-inverting mode for output B
+	//TCCR0A |= (1 << COM0B1);
+	hal_timer0_setOutputB(t0_outB_CLEAR_ON_COMPARE);
+	
+	// set none-inverting mode for output A
+	//TCCR0A |= (1 << COM0A1);
+	hal_timer0_setOutputA(t0_outA_CLEAR_ON_COMPARE);
+	
+
+	//TCCR0A |= (1 << WGM01) | (1 << WGM00);
+	hal_timer0_setMode(t0_mode_FAST_PWM_1);
+	// set fast PWM Mode
+	
+	
+	// set prescaler to 8 and starts PWM
+	
+	hal_timer0_setClockSource(t0_clk_CLK_DIV_256);
+	
+}
+
+void timer0_Normal_PWM()
+{
+	hal_timer0_enableModule();
+	hal_timer0_setCompareValueA(64);
+	hal_timer0_setCompareValueB(128);
+	hal_timer0_setOutputA(t0_outA_TOGGLE_ON_COMPARE);
+	hal_timer0_setOutputB(t0_outB_TOGGLE_ON_COMPARE);
+	hal_timer0_setMode(t0_mode_NORMAL);
+	hal_timer0_setClockSource(t0_clk_CLK_DIV_8);
+}
+
 /*
 	prject settup for sprintf with uint16_t values
 	https://startingelectronics.org/articles/atmel-AVR-8-bit/print-float-atmel-studio-7/
@@ -99,8 +190,13 @@ int main(void)
 	max.selectChip = chipSelect;
 	max.unselectChip = chipUnselect;
 	
+	
 	usartSettup();
 	
+	
+	//timer0_Normal_PWM();
+	timer0_Fast_PWM();
+	//timer0_CTC_PWM();
 	
 	/*
 		for putty: 

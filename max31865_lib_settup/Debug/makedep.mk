@@ -4,6 +4,8 @@
 
 hal_spi.c
 
+hal_timer0.c
+
 hal_usart.c
 
 main.c
