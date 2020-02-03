@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v18.12.4                    
 ******************************************************************************
->> Linked Mon Dec 23 22:03:43 2019
+>> Linked Mon Feb  3 19:36:39 2020
 
 OUTPUT FILE NAME:   <MAX31865.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_mpu"  address: 00004400
@@ -19,7 +19,7 @@ MEMORY CONFIGURATION
   INFOB                 00001900   00000080  00000000  00000080  RWIX
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   RAM                   00001c00   00000800  000000a0  00000760  RWIX
-  FRAM                  00004400   0000bb80  00000034  0000bb4c  RWIX
+  FRAM                  00004400   0000bb80  00000020  0000bb60  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   IPESIGNATURE          0000ff88   00000008  00000008  00000000  RWIX  ffff 
@@ -79,7 +79,7 @@ MEMORY CONFIGURATION
   INT53                 0000fffa   00000002  00000002  00000000  RWIX
   INT54                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FRAM2                 00010000   00014000  00000fb4  0001304c  RWIX
+  FRAM2                 00010000   00014000  00000492  00013b6e  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -230,57 +230,35 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.c.obj (.reset)
 
-.const     0    00004420    00000014     
-                  00004420    00000014     max31865.obj (.const)
-
-.text      0    00010000    00000fb4     
-                  00010000    000002e0     rts430x_lc_rd_eabi.lib : addd.c.obj (.text:__mspabi_addd)
-                  000102e0    00000248                            : frcaddd.c.obj (.text:__TI_frcaddd)
-                  00010528    00000132                            : fs_add.asm.obj (.text)
-                  0001065a    0000011c     main.obj (.text:main)
-                  00010776    000000b8     rts430x_lc_rd_eabi.lib : fs_mpy.asm.obj (.text)
-                  0001082e    000000b2                            : renormd.c.obj (.text:__TI_renormd)
-                  000108e0    000000a6     hal_spi.obj (.text:hal_spi_init)
-                  00010986    000000a2     max31865.obj (.text:max31865_init)
-                  00010a28    0000009e     max31865.obj (.text:max31865_readCelsius)
-                  00010ac6    00000092     max31865.obj (.text:max31865_readADC)
-                  00010b58    0000008c     rts430x_lc_rd_eabi.lib : cvtdf.c.obj (.text:__mspabi_cvtdf)
-                  00010be4    00000064                            : cvtfd.c.obj (.text:__mspabi_cvtfd)
-                  00010c48    00000040     max31865.obj (.text:_read_n_reg)
-                  00010c88    0000003e     rts430x_lc_rd_eabi.lib : asr32.asm.obj (.text:l_asr_const)
-                  00010cc6    0000003e                            : lsl32.asm.obj (.text:l_lsl_const)
-                  00010d04    0000003e                            : lsr32.asm.obj (.text:l_lsr_const)
-                  00010d42    0000003c     max31865.obj (.text:_write_n_reg)
-                  00010d7e    00000034     max31865.obj (.text:max31865_readRTD_ohm)
-                  00010db2    00000030     max31865.obj (.text:max31865_checkThresholdFault)
-                  00010de2    0000002e     max31865.obj (.text:max31865_readKelvin)
-                  00010e10    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
-                  00010e3c    00000026     max31865.obj (.text:max31865_setLowFaultThreshold)
-                  00010e62    00000024     rts430x_lc_rd_eabi.lib : fs_utof.asm.obj (.text)
-                  00010e86    00000022     main.obj (.text:_charge_time_delay)
-                  00010ea8    00000022     main.obj (.text:_conversion_time_delay)
-                  00010eca    00000022     max31865.obj (.text:max31865_setHighFaultThreshold)
-                  00010eec    0000001c     max31865.obj (.text:max31865_clearFault)
-                  00010f08    00000018     hal_spi.obj (.text:hal_spi_trx_byte)
-                  00010f20    00000018     max31865.obj (.text:max31865_readFault)
-                  00010f38    00000016     rts430x_lc_rd_eabi.lib : memset.c.obj (.text:memset)
-                  00010f4e    00000012     main.obj (.text:_chip_select_init)
-                  00010f60    00000010     main.obj (.text:_chip_select)
-                  00010f70    00000010     rts430x_lc_rd_eabi.lib : asr32.asm.obj (.text:l_asr)
-                  00010f80    00000010                            : lsl32.asm.obj (.text:l_lsl)
-                  00010f90    00000010                            : lsr32.asm.obj (.text:l_lsr)
-                  00010fa0    0000000a                            : fs_neg.asm.obj (.text)
-                  00010faa    00000006                            : exit.c.obj (.text:abort)
-                  00010fb0    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+.text      0    00010000    00000492     
+                  00010000    000000d8     main.obj (.text:main)
+                  000100d8    000000a6     hal_spi.obj (.text:hal_spi_init)
+                  0001017e    000000a2     max31865.obj (.text:max31865_init)
+                  00010220    00000092     max31865.obj (.text:max31865_readADC)
+                  000102b2    00000040     max31865.obj (.text:_read_n_reg)
+                  000102f2    0000003c     max31865.obj (.text:_write_n_reg)
+                  0001032e    00000036     max31865.obj (.text:max31865_readFault)
+                  00010364    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
+                  00010390    00000026     max31865.obj (.text:max31865_setLowFaultThreshold)
+                  000103b6    00000022     main.obj (.text:_charge_time_delay)
+                  000103d8    00000022     main.obj (.text:_conversion_time_delay)
+                  000103fa    00000022     max31865.obj (.text:max31865_setHighFaultThreshold)
+                  0001041c    0000001c     max31865.obj (.text:max31865_clearFault)
+                  00010438    00000018     hal_spi.obj (.text:hal_spi_trx_byte)
+                  00010450    00000016     rts430x_lc_rd_eabi.lib : memset.c.obj (.text:memset)
+                  00010466    00000012     main.obj (.text:_chip_select_init)
+                  00010478    00000010     main.obj (.text:_chip_select)
+                  00010488    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
+                  0001048e    00000004                            : pre_init.c.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
        Module             code   ro data   rw data
        ------             ----   -------   -------
     .\
-       main.obj           386    0         0      
+       main.obj           318    0         0      
     +--+------------------+------+---------+---------+
-       Total:             386    0         0      
+       Total:             318    0         0      
                                                   
     .\HAL\
        hal_spi.obj        190    0         0      
@@ -288,9 +266,9 @@ MODULE SUMMARY
        Total:             190    0         0      
                                                   
     .\HWO\
-       max31865.obj       860    20        0      
+       max31865.obj       586    0         0      
     +--+------------------+------+---------+---------+
-       Total:             860    20        0      
+       Total:             586    0         0      
                                                   
     C:\ti\ccs910\ccs\ccs_base\msp430\lib\FR59xx\MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib
        mpu_init.o         44     0         0      
@@ -298,20 +276,8 @@ MODULE SUMMARY
        Total:             44     0         0      
                                                   
     C:\ti\ccs910\ccs\tools\compiler\ti-cgt-msp430_18.12.4.LTS\lib\rts430x_lc_rd_eabi.lib
-       addd.c.obj         736    0         0      
-       frcaddd.c.obj      584    0         0      
-       fs_add.asm.obj     306    0         0      
-       fs_mpy.asm.obj     184    0         0      
-       renormd.c.obj      178    0         0      
-       cvtdf.c.obj        140    0         0      
-       cvtfd.c.obj        100    0         0      
-       asr32.asm.obj      78     0         0      
-       lsl32.asm.obj      78     0         0      
-       lsr32.asm.obj      78     0         0      
-       fs_utof.asm.obj    36     0         0      
        boot.c.obj         24     2         0      
        memset.c.obj       22     0         0      
-       fs_neg.asm.obj     10     0         0      
        isr_trap.asm.obj   8      0         0      
        exit.c.obj         6      0         0      
        pre_init.c.obj     4      0         0      
@@ -344,11 +310,11 @@ MODULE SUMMARY
        int53.asm.obj      0      2         0      
        int54.asm.obj      0      2         0      
     +--+------------------+------+---------+---------+
-       Total:             2572   58        0      
+       Total:             64     58        0      
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       4052   78        160    
+       Grand Total:       1202   58        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -612,7 +578,7 @@ address   name
 000009ce  AESAXIN_L                     
 000004be  BCD2BIN                       
 000004bc  BIN2BCD                       
-00010faa  C$$EXIT                       
+00010488  C$$EXIT                       
 0000043e  CAPTIO0CTL                    
 0000043f  CAPTIO0CTL_H                  
 0000043e  CAPTIO0CTL_L                  
@@ -1735,7 +1701,6 @@ address   name
 00002400  __STACK_END                   
 000000a0  __STACK_SIZE                  
 00004418  __TI_ISR_TRAP                 
-000102e0  __TI_frcaddd                  
 0000ffc6  __TI_int27                    
 0000ffc8  __TI_int28                    
 0000ffca  __TI_int29                    
@@ -1767,93 +1732,32 @@ address   name
 ffffffff  __TI_pprof_out_hndl           
 ffffffff  __TI_prof_data_size           
 ffffffff  __TI_prof_data_start          
-0001082e  __TI_renormd                  
 ffffffff  __c_args__                    
 00000001  __mpu_enable                  
-00010e10  __mpu_init                    
-00010000  __mspabi_addd                 
-0001052e  __mspabi_addf                 
-00010b58  __mspabi_cvtdf                
-00010be4  __mspabi_cvtfd                
-00010e62  __mspabi_fltuf                
-00010776  __mspabi_mpyf                 
-00010fa0  __mspabi_negf                 
-00010f80  __mspabi_slll                 
-00010cfe  __mspabi_slll_1               
-00010cda  __mspabi_slll_10              
-00010cd6  __mspabi_slll_11              
-00010cd2  __mspabi_slll_12              
-00010cce  __mspabi_slll_13              
-00010cca  __mspabi_slll_14              
-00010cc6  __mspabi_slll_15              
-00010cfa  __mspabi_slll_2               
-00010cf6  __mspabi_slll_3               
-00010cf2  __mspabi_slll_4               
-00010cee  __mspabi_slll_5               
-00010cea  __mspabi_slll_6               
-00010ce6  __mspabi_slll_7               
-00010ce2  __mspabi_slll_8               
-00010cde  __mspabi_slll_9               
-00010f70  __mspabi_sral                 
-00010cc0  __mspabi_sral_1               
-00010c9c  __mspabi_sral_10              
-00010c98  __mspabi_sral_11              
-00010c94  __mspabi_sral_12              
-00010c90  __mspabi_sral_13              
-00010c8c  __mspabi_sral_14              
-00010c88  __mspabi_sral_15              
-00010cbc  __mspabi_sral_2               
-00010cb8  __mspabi_sral_3               
-00010cb4  __mspabi_sral_4               
-00010cb0  __mspabi_sral_5               
-00010cac  __mspabi_sral_6               
-00010ca8  __mspabi_sral_7               
-00010ca4  __mspabi_sral_8               
-00010ca0  __mspabi_sral_9               
-00010f90  __mspabi_srll                 
-00010d3c  __mspabi_srll_1               
-00010d18  __mspabi_srll_10              
-00010d14  __mspabi_srll_11              
-00010d10  __mspabi_srll_12              
-00010d0c  __mspabi_srll_13              
-00010d08  __mspabi_srll_14              
-00010d04  __mspabi_srll_15              
-00010d38  __mspabi_srll_2               
-00010d34  __mspabi_srll_3               
-00010d30  __mspabi_srll_4               
-00010d2c  __mspabi_srll_5               
-00010d28  __mspabi_srll_6               
-00010d24  __mspabi_srll_7               
-00010d20  __mspabi_srll_8               
-00010d1c  __mspabi_srll_9               
-00010528  __mspabi_subf                 
+00010364  __mpu_init                    
 00004400  _c_int00_noinit_noargs_mpu    
-00010e86  _charge_time_delay            
-00010f60  _chip_select                  
-00010f4e  _chip_select_init             
-00010ea8  _conversion_time_delay        
+000103b6  _charge_time_delay            
+00010478  _chip_select                  
+00010466  _chip_select_init             
+000103d8  _conversion_time_delay        
 0000fffe  _reset_vector                 
 00002360  _stack                        
-00010fb0  _system_pre_init              
-00010faa  abort                         
+0001048e  _system_pre_init              
+00010488  abort                         
 00004400  fram_ipe_end                  
 00004400  fram_ipe_start                
 00004400  fram_rw_start                 
 00004400  fram_rx_start                 
-000108e0  hal_spi_init                  
-00010f08  hal_spi_trx_byte              
-0001065a  main                          
-00010db2  max31865_checkThresholdFault  
-00010eec  max31865_clearFault           
-00010986  max31865_init                 
-00010ac6  max31865_readADC              
-00010a28  max31865_readCelsius          
-00010f20  max31865_readFault            
-00010de2  max31865_readKelvin           
-00010d7e  max31865_readRTD_ohm          
-00010eca  max31865_setHighFaultThreshold
-00010e3c  max31865_setLowFaultThreshold 
-00010f38  memset                        
+000100d8  hal_spi_init                  
+00010438  hal_spi_trx_byte              
+00010000  main                          
+0001041c  max31865_clearFault           
+0001017e  max31865_init                 
+00010220  max31865_readADC              
+0001032e  max31865_readFault            
+000103fa  max31865_setHighFaultThreshold
+00010390  max31865_setLowFaultThreshold 
+00010450  memset                        
 0000a501  mpu_ctl0_value                
 00001513  mpu_sam_value                 
 00000440  mpu_segment_border1           
@@ -3283,89 +3187,27 @@ address   name
 0000fffa  __TI_int53                    
 0000fffc  __TI_int54                    
 0000fffe  _reset_vector                 
-00010000  __mspabi_addd                 
-000102e0  __TI_frcaddd                  
-00010528  __mspabi_subf                 
-0001052e  __mspabi_addf                 
-0001065a  main                          
-00010776  __mspabi_mpyf                 
-0001082e  __TI_renormd                  
-000108e0  hal_spi_init                  
-00010986  max31865_init                 
-00010a28  max31865_readCelsius          
-00010ac6  max31865_readADC              
-00010b58  __mspabi_cvtdf                
-00010be4  __mspabi_cvtfd                
-00010c88  __mspabi_sral_15              
-00010c8c  __mspabi_sral_14              
-00010c90  __mspabi_sral_13              
-00010c94  __mspabi_sral_12              
-00010c98  __mspabi_sral_11              
-00010c9c  __mspabi_sral_10              
-00010ca0  __mspabi_sral_9               
-00010ca4  __mspabi_sral_8               
-00010ca8  __mspabi_sral_7               
-00010cac  __mspabi_sral_6               
-00010cb0  __mspabi_sral_5               
-00010cb4  __mspabi_sral_4               
-00010cb8  __mspabi_sral_3               
-00010cbc  __mspabi_sral_2               
-00010cc0  __mspabi_sral_1               
-00010cc6  __mspabi_slll_15              
-00010cca  __mspabi_slll_14              
-00010cce  __mspabi_slll_13              
-00010cd2  __mspabi_slll_12              
-00010cd6  __mspabi_slll_11              
-00010cda  __mspabi_slll_10              
-00010cde  __mspabi_slll_9               
-00010ce2  __mspabi_slll_8               
-00010ce6  __mspabi_slll_7               
-00010cea  __mspabi_slll_6               
-00010cee  __mspabi_slll_5               
-00010cf2  __mspabi_slll_4               
-00010cf6  __mspabi_slll_3               
-00010cfa  __mspabi_slll_2               
-00010cfe  __mspabi_slll_1               
-00010d04  __mspabi_srll_15              
-00010d08  __mspabi_srll_14              
-00010d0c  __mspabi_srll_13              
-00010d10  __mspabi_srll_12              
-00010d14  __mspabi_srll_11              
-00010d18  __mspabi_srll_10              
-00010d1c  __mspabi_srll_9               
-00010d20  __mspabi_srll_8               
-00010d24  __mspabi_srll_7               
-00010d28  __mspabi_srll_6               
-00010d2c  __mspabi_srll_5               
-00010d30  __mspabi_srll_4               
-00010d34  __mspabi_srll_3               
-00010d38  __mspabi_srll_2               
-00010d3c  __mspabi_srll_1               
-00010d7e  max31865_readRTD_ohm          
-00010db2  max31865_checkThresholdFault  
-00010de2  max31865_readKelvin           
-00010e10  __mpu_init                    
-00010e3c  max31865_setLowFaultThreshold 
-00010e62  __mspabi_fltuf                
-00010e86  _charge_time_delay            
-00010ea8  _conversion_time_delay        
-00010eca  max31865_setHighFaultThreshold
-00010eec  max31865_clearFault           
-00010f08  hal_spi_trx_byte              
-00010f20  max31865_readFault            
-00010f38  memset                        
-00010f4e  _chip_select_init             
-00010f60  _chip_select                  
-00010f70  __mspabi_sral                 
-00010f80  __mspabi_slll                 
-00010f90  __mspabi_srll                 
-00010fa0  __mspabi_negf                 
-00010faa  C$$EXIT                       
-00010faa  abort                         
-00010fb0  _system_pre_init              
+00010000  main                          
+000100d8  hal_spi_init                  
+0001017e  max31865_init                 
+00010220  max31865_readADC              
+0001032e  max31865_readFault            
+00010364  __mpu_init                    
+00010390  max31865_setLowFaultThreshold 
+000103b6  _charge_time_delay            
+000103d8  _conversion_time_delay        
+000103fa  max31865_setHighFaultThreshold
+0001041c  max31865_clearFault           
+00010438  hal_spi_trx_byte              
+00010450  memset                        
+00010466  _chip_select_init             
+00010478  _chip_select                  
+00010488  C$$EXIT                       
+00010488  abort                         
+0001048e  _system_pre_init              
 ffffffff  __TI_pprof_out_hndl           
 ffffffff  __TI_prof_data_size           
 ffffffff  __TI_prof_data_start          
 ffffffff  __c_args__                    
 
-[1503 symbols]
+[1441 symbols]

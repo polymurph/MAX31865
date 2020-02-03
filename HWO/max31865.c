@@ -25,6 +25,17 @@ enum REG{
     REG_WRITE_LOW_FAULT_TH_LSB
 };
 
+enum {
+    D0 = 0x01,
+    D1 = 0x02,
+    D2 = 0x04,
+    D3 = 0x08,
+    D4 = 0x10,
+    D5 = 0x20,
+    D6 = 0x40,
+    D7 = 0x80
+};
+
 // temperature curve polynomial approximation coefficients
 static const float a1 = 2.55865721669; /*!< 1. polynomial coeff. for
                                             temperature curve*/
@@ -103,6 +114,12 @@ void max31865_init(max31865_t*  device,
     // settup configurations + set a fault status clear (bit auto clear)
     device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) | (1 << 1));
 
+#if 0
+    // activate fault detection with automatic delay
+    device->configReg &= ~D3;
+    device->configReg |= D2;
+#endif
+
     // low and high fault threshold setup
 
     temp_1 = device->highFaultThreshold << 1;
@@ -137,7 +154,9 @@ uint16_t max31865_readADC(const max31865_t* device)
     _read_n_reg(device, REG_READ_RTD_MSB, buff, 2);
 
     // turn off vbias
-    _write_n_reg(device, 0x80, &(device->configReg), 1);
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &(device->configReg), 1);
+
+    //TODO: handle fault bit D0 here! (with callback or other!)
 
     return (((uint16_t)((buff[0]<<8) | buff[1])) >> 1);
 }
@@ -206,8 +225,48 @@ int8_t max31865_checkThresholdFault(const max31865_t* device)
 
 uint8_t max31865_readFault(const max31865_t* device)
 {
-    uint8_t buff = 0;
-    _read_n_reg(device,REG_READ_FAULT_STATUS,&buff,1);
+    uint8_t buff = 0x84;
+
+#if as_docu_says
+
+    uint8_t temp = 0;
+
+    // manual fault detection
+    // 1. VBIAS on for >= 5 time constants of the capacitor charge time
+    // 2. write 0b100x100x to REG_WRITE_CONFIGURATION
+    // 3. wait for >= 5 time constants of the capacitor charge time
+    // 4. write 0b100x110x to REG_WRITE_CONFIGURATION
+    // 5. read fault REG_READ_FAULT_STATUS
+
+    // 1.
+    temp = device->configReg | 0x80;
+    _write_n_reg(device, 0x80, &temp, 1);
+    device->charged_time_delay();
+    device->charged_time_delay();
+    // 2.
+    temp = 0b10001000;
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
+    // 3.
+    device->charged_time_delay();
+    // 4.
+    temp = 0b10001100;
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
+
+    device->charged_time_delay();
+    device->charged_time_delay();
+    device->charged_time_delay();
+
+    _read_n_reg(device, REG_READ_FAULT_STATUS, &buff,1);
+
+    // reset to old settings
+    //temp = device->configReg;
+    //_write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
+#endif
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &buff, 1);
+    device->charged_time_delay();
+
+    _read_n_reg(device, REG_READ_FAULT_STATUS, &buff, 1);
+
     return buff;
 }
 

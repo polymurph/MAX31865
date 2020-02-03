@@ -27,7 +27,9 @@ void _chip_select(bool select)
 void _charge_time_delay()
 {
     volatile uint16_t i = 0;
-    for(i = 0; i<0x1FFF;i++);
+    for(i = 0; i<0x4FFF;i++);
+
+    //__delay_cycles(1000);
 }
 
 void _conversion_time_delay()
@@ -35,6 +37,7 @@ void _conversion_time_delay()
     volatile uint16_t i = 0;
     for(i = 0; i<0x1FFF;i++);
 
+    //__delay_cycles(1000);
     // TODO: check if plausible: wait until DRDY goes low (active -> conversion completed)
 }
 
@@ -77,7 +80,7 @@ int main(void)
 
     temp = max31865_readADC(&Temperature);
 
-    max31865_setHighFaultThreshold(&Temperature, 7000);
+    max31865_setHighFaultThreshold(&Temperature,7000/*7000*/);
     max31865_setLowFaultThreshold(&Temperature, 1000);
 
 
@@ -85,11 +88,11 @@ int main(void)
 	{
 	    temp = max31865_readADC(&Temperature);
 
-	    rtd_ohm = max31865_readRTD_ohm(&Temperature);
-	    celsius = max31865_readCelsius(&Temperature);
-	    kelvin = max31865_readKelvin(&Temperature);
+	    //rtd_ohm = max31865_readRTD_ohm(&Temperature);
+	    //celsius = max31865_readCelsius(&Temperature);
+	    //kelvin = max31865_readKelvin(&Temperature);
 
-	    status = max31865_checkThresholdFault(&Temperature);
+	    //status = max31865_checkThresholdFault(&Temperature);
 	    fault = max31865_readFault(&Temperature);
 
 	    max31865_clearFault(&Temperature);
