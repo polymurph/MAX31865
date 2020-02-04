@@ -80,8 +80,8 @@ int main(void)
 
     temp = max31865_readADC(&Temperature);
 
-    max31865_setHighFaultThreshold(&Temperature,7000/*7000*/);
-    max31865_setLowFaultThreshold(&Temperature, 1000);
+    max31865_setHighFaultThreshold(&Temperature,9000/*7000*/);
+    max31865_setLowFaultThreshold(&Temperature, 200);
 
 
 	while(1)
