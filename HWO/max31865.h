@@ -37,6 +37,7 @@ typedef struct{
     u8_fptr_u8_t spi_trx;
     fptr_t charged_time_delay;
     fptr_t conversion_timer_deay;
+    fptr_t faultThreshold_cb;
     uint16_t rtd;
     uint16_t rref;
     uint16_t lowFaultThreshold;
@@ -50,6 +51,7 @@ void max31865_init(max31865_t*  device,
                    u8_fptr_u8_t spi_trx_cb,
                    fptr_t       charged_time_delay_cb,
                    fptr_t       conversion_timer_deay_cb,
+                   fptr_t       faultThreshold_callback,
                    uint16_t     rtd_ohm,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,

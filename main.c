@@ -4,6 +4,20 @@
 #include "HAL/hal_spi.h"
 #include "HWO/max31865.h"
 
+void _threshold_fault_cb()
+{
+    PM5CTL0 &= ~LOCKLPM5;
+    P1DIR |= 0x01;
+    P1OUT |= 0x01;
+    PM5CTL0 |= LOCKLPM5;
+
+    while(1)
+    {
+        __delay_cycles(100000);
+        P1OUT ^= 0x01;
+    }
+}
+
 void _chip_select_init(void)
 {
     // Pin 2.1
@@ -71,6 +85,7 @@ int main(void)
                   hal_spi_trx_byte,
                   _charge_time_delay,
                   _conversion_time_delay,
+                  _threshold_fault_cb,
                   100,
                   430,  // Rref on breakout board
                   0,

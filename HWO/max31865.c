@@ -93,6 +93,7 @@ void max31865_init(max31865_t*  device,
                    u8_fptr_u8_t spi_trx_cb,
                    fptr_t       charged_time_delay_cb,
                    fptr_t       conversion_timer_deay_cb,
+                   fptr_t       faultThreshold_callback,
                    uint16_t     rtd_ohm,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,
@@ -109,6 +110,7 @@ void max31865_init(max31865_t*  device,
     device->spi_trx = spi_trx_cb;
     device->charged_time_delay = charged_time_delay_cb;
     device->conversion_timer_deay = conversion_timer_deay_cb;
+    device->faultThreshold_cb = faultThreshold_callback;
     device->rtd = rtd_ohm;
     device->rref = rref_ohm;
     device->lowFaultThreshold = lowerFaulThreshold << 1;
@@ -160,12 +162,14 @@ uint16_t max31865_readADC(const max31865_t* device)
 
     //TODO: handle fault bit D0 here! (with callback or other!)
 
+    if(buff[1] & 0x01) device->faultThreshold_cb();
 
+#if 0
     while(buff[1] & 0x01);
     {
         device->conversion_timer_deay();
     }
-
+#endif
     return (((uint16_t)((buff[0]<<8) | buff[1])) >> 1);
 }
 
