@@ -2,17 +2,19 @@
 
 This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31865.html) RTD-to-Digital converter (RTD: resistance temperature detectors).
 
+
+
 ## Getting Started
 
-These instructions whil help you implement the drive in your project step by step.
+These instructions will help you implement the driver step by step into your project.
 
 The driver has an object-oriented approach which enbales a certain abstraction which helps to minimize complexety and improve readability.
 
 ### Prerequisites
+* [Download](https://github.com/polymurph/MAX31865/archive/master.zip) and place the max31865.c/.h files into a desired folder inside your project.
+* Knowledge about the functionality of the Device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
 
-[Download](https://github.com/polymurph/MAX31865/archive/master.zip) the max31865.c/.h files into a desired folder inside your project.
-
-### Creating an Oject
+### Creating an Object
 
 Firts we have to include the driver as following...
 ```c
@@ -29,6 +31,7 @@ max31865_init(TempSensor,...);
 ```
 The init function will update all the struct members of TempSensor for you. It will also write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
+### Measuring Temperature
 
 
 ## Contributing
@@ -46,7 +49,4 @@ See also the list of [contributors](https://github.com/polymurph/MAX31865/graphs
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* 
