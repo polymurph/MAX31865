@@ -198,7 +198,7 @@ int8_t max31865_checkThresholdFault(const max31865_t* device)
     return 0;
 }
 
-// TODO:
+// TODO: implement fault check feature
 uint8_t max31865_check_for_fault(const max31865_t* device)
 {
     uint8_t buff = 0x84;
