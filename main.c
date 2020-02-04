@@ -4,6 +4,9 @@
 #include "HAL/hal_spi.h"
 #include "HWO/max31865.h"
 
+
+max31865_t Temperature;
+
 void _threshold_fault_cb_init()
 {
     PM5CTL0 &= ~LOCKLPM5;
@@ -12,24 +15,47 @@ void _threshold_fault_cb_init()
     P1DIR |= 0x01;
     P1OUT &= ~0x01;
 
+    P9DIR |= 0x80;
+    P9OUT &= ~0x80;
+
     // button
     P1DIR &= ~0x02;
     P1REN |= 0x02;
     P1OUT |= 0x02;
+
+    P1DIR &= ~0x04;
+    P1REN |= 0x04;
+    P1OUT |= 0x04;
 
     PM5CTL0 |= LOCKLPM5;
 }
 
 void _threshold_fault_cb()
 {
-    while(P1IN & 0x02)
-    //while(1)
+    switch(max31865_readFault(&Temperature))
     {
-        __delay_cycles(100000);
-        P1OUT ^= 0x01;
-        //if(!(P1IN & 0x01)) break;
+    case max31865_err_RTD_HIGH_THRESHOLD:
+        while(P1IN & 0x02)
+        {
+            __delay_cycles(100000);
+            P1OUT ^= 0x01;
+        }
+        break;
+    case max31865_err_RTD_LOW_THRESHOLD:
+        while(P1IN & 0x04)
+        {
+            __delay_cycles(100000);
+            P9OUT ^= 0x80;
+        }
+        break;
+    default:
+        break;
     }
+
+    //max31865_clearFault(&Temperature);
+
     P1OUT &= ~0x01;
+    P9OUT &= ~0x80;
 }
 
 void _chip_select_init(void)
@@ -78,7 +104,7 @@ int main(void)
     volatile float celsius = 0.0;
     volatile float kelvin = 0.0;
 
-    max31865_t Temperature;
+
 
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
@@ -116,14 +142,14 @@ int main(void)
 
 	while(1)
 	{
-	    //temp = max31865_readADC(&Temperature);
+	    temp = max31865_readADC(&Temperature);
 
 	    //rtd_ohm = max31865_readRTD_ohm(&Temperature);
-	    celsius = max31865_readCelsius(&Temperature);
+	    //celsius = max31865_readCelsius(&Temperature);
 	    //kelvin = max31865_readKelvin(&Temperature);
 
 	    //status = max31865_checkThresholdFault(&Temperature);
-	    fault = max31865_readFault(&Temperature);
+	    //fault = max31865_readFault(&Temperature);
 
 	    //max31865_clearFault(&Temperature);
 	    //_charge_time_delay();

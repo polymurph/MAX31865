@@ -116,7 +116,7 @@ void max31865_init(max31865_t*  device,
     device->lowFaultThreshold = lowerFaulThreshold << 1;
     device->highFaultThreshold = higherFaultThreshold << 1;
     // settup configurations + set a fault status clear (bit auto clear)
-    device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) | (1 << 1));
+    device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) /*| (1 << 1)*/);
 
 #if 0
     // activate fault detection with automatic delay
@@ -144,18 +144,18 @@ uint16_t max31865_readADC(const max31865_t* device)
     uint8_t buff[2] = {0,0};
     uint8_t temp = 0;
     // turn on vbias
-    temp = device->configReg | 0x80;
-    _write_n_reg(device, 0x80, &temp, 1);
+    temp = device->configReg | D7;
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
 
     device->charged_time_delay();
 
     // initiate 1-shot conversion + vbias
     temp = device->configReg | 0xA0;
-    _write_n_reg(device, 0x80, &temp, 1);
+    _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
 
     device->conversion_timer_deay();
 
-    _read_n_reg(device, REG_READ_RTD_MSB, buff, 2);
+    _read_n_reg(device, REG_READ_RTD_MSB, &buff, 2);
 
     // turn off vbias
     _write_n_reg(device, REG_WRITE_CONFIGURATION, &(device->configReg), 1);
@@ -217,14 +217,14 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
     threshold = threshold << 1;
     buff[0] = (uint8_t)(threshold >> 8);
     buff[1] = (uint8_t)(threshold);
-    _write_n_reg(device, 0x85, buff, 2);
+    _write_n_reg(device, REG_WRITE_LOW_FAULT_TH_MSB, buff, 2);
 }
 
 int8_t max31865_checkThresholdFault(const max31865_t* device)
 {
     //uint8_t buff = readReg(device,0x07) & ~0x3F;
-    uint8_t buff = 0;
-    _read_n_reg(device,REG_READ_FAULT_STATUS,&buff,1);
+    uint8_t buff;
+    _read_n_reg(device,REG_READ_FAULT_STATUS, &buff, 1);
 
     if(buff & max31865_err_RTD_HIGH_THRESHOLD) return 1;
     if(buff & max31865_err_RTD_LOW_THRESHOLD) return -1;
@@ -233,7 +233,9 @@ int8_t max31865_checkThresholdFault(const max31865_t* device)
     return 0;
 }
 
-uint8_t max31865_readFault(const max31865_t* device)
+
+// TODO:
+uint8_t max31865_check_for_fault(const max31865_t* device)
 {
     uint8_t buff = 0x84;
 
@@ -277,13 +279,19 @@ uint8_t max31865_readFault(const max31865_t* device)
     device->charged_time_delay();
 
     _read_n_reg(device, REG_READ_FAULT_STATUS, &buff, 1);
+    return buff;
+}
 
+uint8_t max31865_readFault(const max31865_t* device)
+{
+    uint8_t buff;
+    _read_n_reg(device, REG_READ_FAULT_STATUS, &buff, 1);
     return buff;
 }
 
 void max31865_clearFault(const max31865_t* device)
 {
-    uint8_t temp = (device->configReg | 0x02);
+    uint8_t temp = (device->configReg | D1);
     _write_n_reg(device,REG_WRITE_CONFIGURATION, &temp, 1);
 }
 
