@@ -167,12 +167,7 @@ uint16_t max31865_readADC(const max31865_t* device)
         max31865_clearFault(device);
     }
 
-#if 0
-    while(buff[1] & 0x01);
-    {
-        device->conversion_timer_deay();
-    }
-#endif
+
     return (((uint16_t)((buff[0]<<8) | buff[1])) >> 1);
 }
 
