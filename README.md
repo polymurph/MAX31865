@@ -27,9 +27,61 @@ max31865_t TempSensor;
 ```
 This instance has not yet been initialized and must be done with the init function to complete the process as following...
 ```c
-max31865_init(TempSensor,...);
+max31865_init(&TempSensor,...);
 ```
-The init function will update all the struct members of TempSensor for you. It will also write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
+The init function will update all the struct members of TempSensor with your desired settings. It will automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
+
+#### Init Parameters
+```c
+max31865_init(max31865_t*  device,...);
+```
+**device** is a pointer to your Object. Your Oject must be passed by pointer to be able to initialized.
+```c
+max31865_init(&TempSensor,...);
+```
+-----
+
+```c
+max31865_init(...,fptr_b_t chipselect_cb,...);
+```
+**chipselect_cp** is a function pointer to a chipselect function for SPI interface. This function shold contain the needed GPIO manipulations to select the device. The callback function must have a bool type as parameter and void type as return parameter as shown here...
+
+```c
+void chipselect(boot enable) {
+  // GPIO manipulations
+}
+```
+
+-----
+
+```c
+max31865_init(...,u8_fptr_u8_t spi_trx_cb,,...);
+```
+**spi_trx_cb** is a function pointer to a callback for a SPI transrecive (full duplex) function. This function should contain all the Master SPI transrecive manipulations.The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
+```c
+uint8_t spi_trx(uint8_t data) {
+  // SPI manipulations
+}
+```
+
+----
+
+```c
+max31865_init(..., fptr_t charged_time_delay_cb,...);
+```
+**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for atleas 5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD.
+![t_delay](README_pictures/t_delay.png)
+The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
+
+
+
+
+
+
+
+
+
+ 
 
 ### Measuring Temperature
 
