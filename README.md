@@ -70,7 +70,9 @@ uint8_t spi_trx(uint8_t data) {
 max31865_init(..., fptr_t charged_time_delay_cb,...);
 ```
 **charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for atleas 5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD.
-![t_delay](README_pictures/t_delay.png)
+
+![t_delay](https://github.com/polymurph/MAX31865/t_delay.png)
+
 The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
 
 
