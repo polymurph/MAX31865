@@ -162,7 +162,10 @@ uint16_t max31865_readADC(const max31865_t* device)
 
     //TODO: handle fault bit D0 here! (with callback or other!)
 
-    if(buff[1] & 0x01) device->faultThreshold_cb();
+    if(buff[1] & 0x01)  {
+        device->faultThreshold_cb();
+        max31865_clearFault(device);
+    }
 
 #if 0
     while(buff[1] & 0x01);
