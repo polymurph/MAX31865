@@ -51,41 +51,12 @@ static const float a5 = 7.31888555389e-13; /*!< 5. polynomial coeff. for
 static void _write_n_reg(const max31865_t*  device,
                          uint8_t            start_reg_address,
                          const uint8_t*     data,
-                         uint8_t            len)
-{
-    uint8_t index = 0;
-
-    if(len == 0) return;
-
-    device->chipselect(true);
-
-    device->spi_trx(start_reg_address);
-
-    do{
-        device->spi_trx(data[index++]);
-    } while(index < len);
-
-    device->chipselect(false);
-}
-
+                         uint8_t            len);
 static void _read_n_reg(const max31865_t*   device,
                         uint8_t             start_reg_address,
                         uint8_t*            data,
-                        uint8_t             len)
-{
-    uint8_t index = 0;
-
-    if(len == 0) return;
-
-    device->chipselect(true);
-    device->spi_trx(start_reg_address);
-
-    do {
-        data[index++] = device->spi_trx(0xFF);
-    } while(index < len);
-
-    device->chipselect(false);
-}
+                        uint8_t             len);
+void _handle_threshold_fault(const max31865_t* device);
 
 
 void max31865_init(max31865_t*  device,
@@ -93,7 +64,8 @@ void max31865_init(max31865_t*  device,
                    u8_fptr_u8_t spi_trx_cb,
                    fptr_t       charged_time_delay_cb,
                    fptr_t       conversion_timer_deay_cb,
-                   fptr_t       faultThreshold_callback,
+                   fptr_t       highFaultThreshold_callback,
+                   fptr_t       lowFaultThreshold_callback,
                    uint16_t     rtd_ohm,
                    uint16_t     rref_ohm,
                    uint16_t     lowerFaulThreshold,
@@ -110,19 +82,14 @@ void max31865_init(max31865_t*  device,
     device->spi_trx = spi_trx_cb;
     device->charged_time_delay = charged_time_delay_cb;
     device->conversion_timer_deay = conversion_timer_deay_cb;
-    device->faultThreshold_cb = faultThreshold_callback;
+    device->highFaultThreshold_cb =  highFaultThreshold_callback;
+    device->lowFaultThreshold_cb = lowFaultThreshold_callback;
     device->rtd = rtd_ohm;
     device->rref = rref_ohm;
     device->lowFaultThreshold = lowerFaulThreshold << 1;
     device->highFaultThreshold = higherFaultThreshold << 1;
     // settup configurations + set a fault status clear (bit auto clear)
     device->configReg = (uint8_t)((wire_3 << 4) | (filter_50Hz) /*| (1 << 1)*/);
-
-#if 0
-    // activate fault detection with automatic delay
-    device->configReg &= ~D3;
-    device->configReg |= D2;
-#endif
 
     // low and high fault threshold setup
 
@@ -137,7 +104,6 @@ void max31865_init(max31865_t*  device,
     _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
     _write_n_reg(device, REG_WRITE_HIGH_FAULT_TH_MSB, buff, 4);
 }
-
 
 uint16_t max31865_readADC(const max31865_t* device)
 {
@@ -163,8 +129,10 @@ uint16_t max31865_readADC(const max31865_t* device)
     //TODO: handle fault bit D0 here! (with callback or other!)
 
     if(buff[1] & 0x01)  {
-        device->faultThreshold_cb();
-        max31865_clearFault(device);
+
+        _handle_threshold_fault(device);
+        //device->faultThreshold_cb();
+        //max31865_clearFault(device);
     }
 
 
@@ -177,7 +145,6 @@ float max31865_readRTD_ohm(const max31865_t* device)
     return (((float)(max31865_readADC(device)) * (float)(device->rref))  / 32768.0);
 }
 
-
 float max31865_readCelsius(const max31865_t* device)
 {
     float x = (float)(device->rtd) - max31865_readRTD_ohm(device);
@@ -186,12 +153,10 @@ float max31865_readCelsius(const max31865_t* device)
     return -(x * (a1 + x * (a2 + x * (a3 + x * (a4 + x * a5)))));
 }
 
-
 float max31865_readKelvin(const max31865_t* device)
 {
     return max31865_readCelsius(device) + 273.15;
 }
-
 
 // TODO: test
 void max31865_setHighFaultThreshold(max31865_t* device,
@@ -232,7 +197,6 @@ int8_t max31865_checkThresholdFault(const max31865_t* device)
     // no fault
     return 0;
 }
-
 
 // TODO:
 uint8_t max31865_check_for_fault(const max31865_t* device)
@@ -295,5 +259,61 @@ void max31865_clearFault(const max31865_t* device)
     _write_n_reg(device,REG_WRITE_CONFIGURATION, &temp, 1);
 }
 
+
+static void _write_n_reg(const max31865_t*  device,
+                         uint8_t            start_reg_address,
+                         const uint8_t*     data,
+                         uint8_t            len)
+{
+    uint8_t index = 0;
+
+    if(len == 0) return;
+
+    device->chipselect(true);
+
+    device->spi_trx(start_reg_address);
+
+    do{
+        device->spi_trx(data[index++]);
+    } while(index < len);
+
+    device->chipselect(false);
+}
+
+static void _read_n_reg(const max31865_t*   device,
+                        uint8_t             start_reg_address,
+                        uint8_t*            data,
+                        uint8_t             len)
+{
+    uint8_t index = 0;
+
+    if(len == 0) return;
+
+    device->chipselect(true);
+    device->spi_trx(start_reg_address);
+
+    do {
+        data[index++] = device->spi_trx(0xFF);
+    } while(index < len);
+
+    device->chipselect(false);
+}
+
+void _handle_threshold_fault(const max31865_t* device)
+{
+    switch(max31865_readFault(device))
+    {
+    case max31865_err_RTD_HIGH_THRESHOLD:
+        device->highFaultThreshold_cb();
+        break;
+    case max31865_err_RTD_LOW_THRESHOLD:
+        device->lowFaultThreshold_cb();
+        break;
+    default:
+        while(1);
+        break;
+    }
+    max31865_clearFault(device);
+}
 
 

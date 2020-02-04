@@ -30,6 +30,26 @@ void _threshold_fault_cb_init()
     PM5CTL0 |= LOCKLPM5;
 }
 
+void _low_threshold_fault_cb()
+{
+    while(P1IN & 0x04)
+    {
+        __delay_cycles(100000);
+        P9OUT ^= 0x80;
+    }
+    P9OUT &= ~0x80;
+}
+
+void _high_threshold_fault_cb()
+{
+    while(P1IN & 0x02)
+    {
+        __delay_cycles(100000);
+        P1OUT ^= 0x01;
+    }
+    P1OUT &= ~0x01;
+}
+#if 0
 void _threshold_fault_cb()
 {
     switch(max31865_readFault(&Temperature))
@@ -57,6 +77,7 @@ void _threshold_fault_cb()
     P1OUT &= ~0x01;
     P9OUT &= ~0x80;
 }
+#endif
 
 void _chip_select_init(void)
 {
@@ -126,7 +147,8 @@ int main(void)
                   hal_spi_trx_byte,
                   _charge_time_delay,
                   _conversion_time_delay,
-                  _threshold_fault_cb,
+                  _high_threshold_fault_cb,
+                  _low_threshold_fault_cb,
                   100,
                   430,  // Rref on breakout board
                   0,
