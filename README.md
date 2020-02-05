@@ -7,7 +7,7 @@ This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/
     1. [Prerequisites](#p_1_1)
     2. [Advice](#p_1_2)
 2.  [Creating an Object](#p_2)
-    1. [Init Function Parameters](#p_2_1)
+    1. [Init Function Parameters Description](#p_2_1)
 3.  [Measuring Temperature](#p_3)
     1. [Automatic Threshold Fault Detection](#p_3_1)
 4.  [Changig the Threshold values](#p_4)
@@ -43,7 +43,7 @@ If you want to get familiar with the MAX31865 device I recoment you to buy a [br
 
 ## 2. Creating an Object <a name="p_2"></a>
 
-First we have to include the driver as following...
+First we have to include the driver as follows...
 ```c
 #include "<your path>/max31865.h"
 ```
@@ -56,15 +56,17 @@ This instance has not yet been initialized and must be done with the init functi
 ```c
 max31865_init(&TempSensor,...);
 ```
-The init function will update all the struct members of TempSensor with your desired settings. It will automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
+The init function will update all the struct members of the TempSensor Object with your desired configurations. It will aslo automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
-### 2.1. Init Function Parameters <a name="p_2_1"></a>
+### 2.1. Init Function Parameters Description <a name="p_2_1"></a>
 ```c
 max31865_init(max31865_t*  device,...);
 ```
-**device** is a pointer to your Object. Your Oject must be passed by pointer to be able to initialized.
+**device** is a pointer to your Object. Your Oject must be passed by pointer to be able to initialized. For example...
 ```c
 max31865_init(&TempSensor,...);
+max31865_readADC(&TempSensor);
+//...
 ```
 ----------------------------------------------------
 
@@ -75,7 +77,11 @@ max31865_init(...,fptr_b_t chipselect_cb,...);
 
 ```c
 void chipselect(boot enable) {
-  // GPIO manipulations
+  if(enable){ // device selected
+    // pull chip select pin low
+  } else { // device not selected
+    // pull chip select pin high
+  }
 }
 ```
 
@@ -88,6 +94,7 @@ max31865_init(...,u8_fptr_u8_t spi_trx_cb,,...);
 ```c
 uint8_t spi_trx(uint8_t data) {
   // SPI manipulations
+  return RX_data;
 }
 ```
 
@@ -96,7 +103,7 @@ uint8_t spi_trx(uint8_t data) {
 ```c
 max31865_init(..., fptr_t charged_time_delay_cb,...);
 ```
-**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for at leas 10.5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
+**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle of at least 10.5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
 
 ![](https://raw.githubusercontent.com/polymurph/MAX31865/master/formula_charge_time.png)
 
@@ -137,14 +144,14 @@ void threshold_fault(void) {
 ```c
 max31865_init(..., uint16_t rtd_ohm,...);
 ```
-**rtd_ohm** is the value of the RTD in Ohms at 0°C. For example; a PT100 has a resistiv value of 100 Ohms at 0°C.
+**rtd_ohm** is the value of the RTD in Ohms at 0°C. For example; a PT100 has a resistiv value of 100Ω at 0°C.
 
 ----------------------------------------------------
 
 ```c
 max31865_init(..., uint16_t rref_ohm,...);
 ```
-**rref_ohm** is the value of the Reference Resistor.
+**rref_ohm** is the value of the Reference Resistor in Ω.
 
 ----------------------------------------------------
 
