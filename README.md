@@ -31,7 +31,7 @@ max31865_init(&TempSensor,...);
 ```
 The init function will update all the struct members of TempSensor with your desired settings. It will automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
-### 2.1. Init Parameters
+### 2.1. Init Function Parameters
 ```c
 max31865_init(max31865_t*  device,...);
 ```
@@ -141,7 +141,7 @@ max31865_init(..., bool filter_50Hz, ...);
 **filter_50Hz** is a switch for the common mode filter. Either 50Hz or 60Hz supression can be choosen. Note that the conversion time differs between 50Hz and 60Hz. The following shows what delay times are needed...
 
 Frequency | delay time
-----------| -------------
+----------|-----------
 50Hz      | 62.5 ms
 60Hz      | 52 ms
 
@@ -214,37 +214,34 @@ max31865_clearFault(&TempSensor);
 
 ```
 
-
-
-
-
 ### 5.2. Clearing Faults
-It is possible to clear all faults with as following
+
+It is possible to clear all faults as follows...
 ```c
 uint8_t max31865_clearFault(const max31865_t* device);
 ```
-## Prospects
+## 6 Prospects
 
-### Feature Ideas
+### 6.1. Feature Ideas
 * handler for the faults which calls the associated callbacks to each error when using...
 ```c
 uint8_t max31865_readFault(const max31865_t* device);
 ```
 * system check which performs a fault detection cycle
 
-## Contributing
+## 7. Contributing
 
 Please read [CONTRIBUTING.md]() for details on my code of conduct, and the process for submitting pull requests to us.
 
-## Authors
+## 8. Authors
 
 * **Edwin Koch** - *Initial work* - [polymurph](https://github.com/polymurph)
 
 See also the list of [contributors](https://github.com/polymurph/MAX31865/graphs/contributors) who participated in this project.
 
-## License
+## 9. License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
+## 10. Acknowledgments
 * 
