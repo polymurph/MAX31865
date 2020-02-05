@@ -69,7 +69,7 @@ uint8_t spi_trx(uint8_t data) {
 ```c
 max31865_init(..., fptr_t charged_time_delay_cb,...);
 ```
-**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for at leas 5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
+**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for at leas 10.5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
 
 ![](https://raw.githubusercontent.com/polymurph/MAX31865/master/formula_charge_time.png)
 
@@ -85,7 +85,7 @@ void charge_time_delay_cb(void) {
 ```c
 max31865_init(..., fptr_t conversion_timer_deay_cb,...);
 ```
-**conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function. The delay time is dependent on the choise of the common mode filter. The callback function must have a void type as parameter and void type as return parameter as shown here...
+**conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function. The delay time is dependent on the choice of the common mode filter. The callback function must have a void type as parameter and void type as return parameter as shown here...
 ```c
 void conversion_time_delay_cb(void) {
   // 65.2 ms for 50Hz or 52 ms for 60Hz surpression
@@ -121,7 +121,7 @@ max31865_init(..., uint16_t rref_ohm,...);
 
 ----------------------------------------------------
 
-```c
+c
 max31865_init(..., uint16_t lowerFaulThreshold,
                    uint16_t higherFaultThreshold, ...);
 ```
@@ -143,8 +143,49 @@ max31865_init(..., bool filter_50Hz, ...);
 * 50 Hz -> 62.5 ms
 * 60 Hz -> 52 ms
 
+----------------------------------------------------
+
 ### Measuring Temperature
 
+There are four ways one can get the remperature.
+
+* as raw ADC value with
+  ```c
+  uint16_t max31865_readADC(const max31865_t* device);
+  ```
+* as Resistance Value in Ω with
+  ```c
+  float max31865_readRTD_ohm(const max31865_t* device);
+  ```
+* as Celsius Value in °C
+  ```c
+  float max31865_readCelsius(const max31865_t* device);
+  ```
+* as Kelvin Value in °K
+  ```c
+  float max31865_readKelvin(const max31865_t* device);
+  ```
+
+For reading Celsius °C the Resistance of the RTD is measured and is then calculated with a polynomial approximation of the RTD curve. It is done with the aid oh Hrners method to reduce the needed multiplication and addition numbers.
+
+For reading Kelvin °K the measured Value in °C is added with the offset of 273.15 °K.
+
+### Automatic Threshold Fault Detection
+
+Each time when a mesurement is done (raw ADC, Ω, °C or °K) the value is checked if it lies within the boundarys set by the upper and lower Threshold values. If the measured Value is over the upper threshold the **highFaultThreshold_callback** is called. If the value is below the lower threshold the **lowFaultThreshold_callback** is calles. After completion of the callbacks all Faults are cleared.
+
+## Changig the Threshold values
+
+It is possible to change the upper and lower threshold at anny given time by calling the following functions...
+
+```c
+void max31865_setHighFaultThreshold(max31865_t* device,
+                                    uint16_t    threshold);
+
+void max31865_setLowFaultThreshold(max31865_t*  device,
+                                   uint16_t     threshold);
+
+```
 
 ## Contributing
 

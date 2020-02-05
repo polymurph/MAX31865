@@ -75,8 +75,6 @@ float max31865_readRTD_ohm(const max31865_t* device);
 
 float max31865_readCelsius(const max31865_t* device);
 
-float max31865_readKelvin(const max31865_t* device);
-
 void max31865_setHighFaultThreshold(max31865_t* device,
                                     uint16_t    threshold);
 
