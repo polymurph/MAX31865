@@ -30,6 +30,11 @@ The driver has an object-oriented approach which enbales a certain abstraction w
 ### 1.1. Prerequisites <a name="p_1_1"></a>
 * [Download](https://github.com/polymurph/MAX31865/archive/master.zip) and place the max31865.c/.h files into a desired folder inside your project.
 * Knowledge about the functionality of the Device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
+* fully configured hardware, this implies:
+  * hardware configured for 3-wire od 2/4-wire
+  * reference Resistor chosen according to Datasheet
+  * RTD (PT100 ot PT1000 etc.)
+* low level software for GPIO and SPI must be provided
 
 ## 2. Creating an Object <a name="p_2"></a>
 
