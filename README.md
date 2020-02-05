@@ -87,11 +87,12 @@ max31865_init(..., fptr_t conversion_timer_deay_cb,...);
 ```
 **conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function.
 
+![](https://raw.githubusercontent.com/polymurph/MAX31865/master/t_conversion.png)
 
 The callback function must have a void type as parameter and void type as return parameter as shown here...
 ```c
 void charge_time_delay_cb(void) {
-  // 5*tau delay
+  // 10.5*tau delay
 }
 ```
 
