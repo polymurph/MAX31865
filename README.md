@@ -4,13 +4,18 @@ This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/
 
 # Table of Content
 1.  [Getting_Started](#p_1)
-2.  []
-3.  []
-4.  []
-5.  []
-6.  []
-7.  []
-8.  []
+    1. [Prerequisites](#p_1_1)
+2.  [Creating_an_Object](#p_2)
+    1. [Init_Function_Parameters](#p_2_1)
+3.  [Measuring_Temperature](#p_3)
+    1. [Automatic_Threshold_Fault_Detection](#p_3_1)
+4.  [](#)
+5.  [](#)
+6.  [](#)
+7.  [](#)
+8.  [](#)
+9.  [](#)
+10. [](#)
 ----
 ----
 ## 1. Getting Started <a name="p_1"></a>
@@ -19,11 +24,11 @@ These instructions will help you implement the driver step by step into your pro
 
 The driver has an object-oriented approach which enbales a certain abstraction which helps to minimize complexety and improve readability.
 
-### 1.1. Prerequisites
+### 1.1. Prerequisites <a name="p_1_1"></a>
 * [Download](https://github.com/polymurph/MAX31865/archive/master.zip) and place the max31865.c/.h files into a desired folder inside your project.
 * Knowledge about the functionality of the Device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
 
-## 2. Creating an Object
+## 2. Creating an Object <a name="p_2"></a>
 
 First we have to include the driver as following...
 ```c
@@ -40,7 +45,7 @@ max31865_init(&TempSensor,...);
 ```
 The init function will update all the struct members of TempSensor with your desired settings. It will automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
-### 2.1. Init Function Parameters
+### 2.1. Init Function Parameters <a name="p_2_1"></a>
 ```c
 max31865_init(max31865_t*  device,...);
 ```
@@ -156,7 +161,7 @@ Frequency | delay time
 
 ----------------------------------------------------
 
-##  3. Measuring Temperature
+##  3. Measuring Temperature <a name="p_3"></a>
 
 There are four ways one can get the remperature.
 
@@ -181,11 +186,11 @@ For reading Celsius °C the Resistance of the RTD is measured and is then calcul
 
 For reading Kelvin °K the measured Value in °C is added with the offset of 273.15 °K.
 
-### 3.1. Automatic Threshold Fault Detection
+### 3.1. Automatic Threshold Fault Detection <a name="p_3_1"></a>
 
 Each time when a mesurement is done (raw ADC, Ω, °C or °K) the value is checked if it lies within the boundarys set by the upper and lower Threshold values. If the measured Value is over the upper threshold the **highFaultThreshold_callback** is called. If the value is below the lower threshold the **lowFaultThreshold_callback** is calles. After completion of the callbacks all Faults are cleared.
 
-## 4. Changig the Threshold values
+## 4. Changig the Threshold values <a name="p_4"></a>
 
 It is possible to change the upper and lower threshold at anny given time by calling the following functions...
 
@@ -198,9 +203,9 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
 
 ```
 
-## 5. Faults
+## 5. Faults <a name="p_5"></a>
 
-### 5.1. Reading Faults
+### 5.1. Reading Faults <a name="p_5_1"></a>
 
 It is possible to read the faults as follows...
 ```c
@@ -223,34 +228,34 @@ max31865_clearFault(&TempSensor);
 
 ```
 
-### 5.2. Clearing Faults
+### 5.2. Clearing Faults <a name="p_5_2"></a>
 
 It is possible to clear all faults as follows...
 ```c
 uint8_t max31865_clearFault(const max31865_t* device);
 ```
-## 6 Prospects
+## 6 Prospects <a name="p_6"></a>
 
-### 6.1. Feature Ideas
+### 6.1. Feature Ideas <a name="p_6_1"></a>
 * handler for the faults which calls the associated callbacks to each error when using...
 ```c
 uint8_t max31865_readFault(const max31865_t* device);
 ```
 * system check which performs a fault detection cycle
 
-## 7. Contributing
+## 7. Contributing <a name="p_7"></a>
 
 Please read [CONTRIBUTING.md]() for details on my code of conduct, and the process for submitting pull requests to us.
 
-## 8. Authors
+## 8. Authors <a name="p_8"></a>
 
 * **Edwin Koch** - *Initial work* - [polymurph](https://github.com/polymurph)
 
 See also the list of [contributors](https://github.com/polymurph/MAX31865/graphs/contributors) who participated in this project.
 
-## 9. License
+## 9. License <a name="p_9"></a>
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## 10. Acknowledgments
+## 10. Acknowledgments <a name="p_10"></a>
 * 
