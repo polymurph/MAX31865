@@ -237,7 +237,7 @@ It is possible to clear all faults as follows...
 ```c
 uint8_t max31865_clearFault(const max31865_t* device);
 ```
-## 6 Prospects <a name="p_6"></a>
+## 6. Prospects <a name="p_6"></a>
 
 ### 6.1. Feature Ideas <a name="p_6_1"></a>
 * handler for the faults which calls the associated callbacks to each error when using...
