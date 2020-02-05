@@ -69,12 +69,31 @@ uint8_t spi_trx(uint8_t data) {
 ```c
 max31865_init(..., fptr_t charged_time_delay_cb,...);
 ```
-**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for atleas 5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD.
+**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle for at leas 5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
 
-![](https://github.com/polymurph/MAX31865/blob/master/t_delay.png)
+![](https://raw.githubusercontent.com/polymurph/MAX31865/master/t_charge.png)
 
-The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
+The callback function must have a void type as parameter and void type as return parameter as shown here...
+```c
+void charge_time_delay_cb(void) {
+  // 5*tau delay
+}
+```
 
+----
+
+```c
+max31865_init(..., fptr_t conversion_timer_deay_cb,...);
+```
+**conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function.
+
+
+The callback function must have a void type as parameter and void type as return parameter as shown here...
+```c
+void charge_time_delay_cb(void) {
+  // 5*tau delay
+}
+```
 
 
 
