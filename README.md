@@ -258,7 +258,7 @@ See also the list of [contributors](https://github.com/polymurph/MAX31865/graphs
 
 ## 9. License <a name="p_9"></a>
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/polymurph/MAX31865/blob/master/LICENSE) file for details
 
 ## 10. Acknowledgments <a name="p_10"></a>
 * 
