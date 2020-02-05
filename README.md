@@ -121,7 +121,7 @@ max31865_init(..., uint16_t rref_ohm,...);
 
 ----------------------------------------------------
 
-c
+```c
 max31865_init(..., uint16_t lowerFaulThreshold,
                    uint16_t higherFaultThreshold, ...);
 ```
