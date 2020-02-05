@@ -37,7 +37,7 @@ First we have to include the driver as following...
 ```c
 #include "<your path>/max31865.h"
 ```
-Then we can then create an instance...
+Then we can create an instance...
 
 ```c
 max31865_t TempSensor;
@@ -102,7 +102,7 @@ void charge_time_delay_cb(void) {
 ```c
 max31865_init(..., fptr_t conversion_timer_deay_cb,...);
 ```
-**conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function. The delay time is dependent on the choice of the common mode filter. The callback function must have a void type as parameter and void type as return parameter as shown here...
+**conversion_timer_deay_cb** is a function pointer to a callback for the conversion time delay function. The delay time is dependent on the choice of the common mode [filter](#ref_1). The callback function must have a void type as parameter and void type as return parameter as shown here...
 ```c
 void conversion_time_delay_cb(void) {
   // 65.2 ms for 50Hz or 52 ms for 60Hz surpression
@@ -152,6 +152,7 @@ max31865_init(..., bool wire_3,...);
 **wire_3** is a switch between 2/4-wire operation or 3-wire operation. To choose 2/4-wire operation write false and for 3-wire operation write true. 
 
 ----------------------------------------------------
+<a name="ref_1"></a>
 ```c
 max31865_init(..., bool filter_50Hz, ...);
 ```
