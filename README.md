@@ -4,19 +4,19 @@ This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/
 
 
 
-## Getting Started
+## 1. Getting Started
 
 These instructions will help you implement the driver step by step into your project.
 
 The driver has an object-oriented approach which enbales a certain abstraction which helps to minimize complexety and improve readability.
 
-### Prerequisites
+### 1.1. Prerequisites
 * [Download](https://github.com/polymurph/MAX31865/archive/master.zip) and place the max31865.c/.h files into a desired folder inside your project.
 * Knowledge about the functionality of the Device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
 
-### Creating an Object
+## 2. Creating an Object
 
-Firts we have to include the driver as following...
+First we have to include the driver as following...
 ```c
 #include "<your path>/max31865.h"
 ```
@@ -31,7 +31,7 @@ max31865_init(&TempSensor,...);
 ```
 The init function will update all the struct members of TempSensor with your desired settings. It will automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
-#### Init Parameters
+### 2.1. Init Parameters
 ```c
 max31865_init(max31865_t*  device,...);
 ```
@@ -140,12 +140,14 @@ max31865_init(..., bool filter_50Hz, ...);
 ```
 **filter_50Hz** is a switch for the common mode filter. Either 50Hz or 60Hz supression can be choosen. Note that the conversion time differs between 50Hz and 60Hz. The following shows what delay times are needed...
 
-* 50 Hz -> 62.5 ms
-* 60 Hz -> 52 ms
+Frequency | delay time
+----------| -------------
+50Hz      | 62.5 ms
+60Hz      | 52 ms
 
 ----------------------------------------------------
 
-### Measuring Temperature
+##  3. Measuring Temperature
 
 There are four ways one can get the remperature.
 
@@ -170,11 +172,11 @@ For reading Celsius °C the Resistance of the RTD is measured and is then calcul
 
 For reading Kelvin °K the measured Value in °C is added with the offset of 273.15 °K.
 
-### Automatic Threshold Fault Detection
+### 3.1. Automatic Threshold Fault Detection
 
 Each time when a mesurement is done (raw ADC, Ω, °C or °K) the value is checked if it lies within the boundarys set by the upper and lower Threshold values. If the measured Value is over the upper threshold the **highFaultThreshold_callback** is called. If the value is below the lower threshold the **lowFaultThreshold_callback** is calles. After completion of the callbacks all Faults are cleared.
 
-## Changig the Threshold values
+## 4. Changig the Threshold values
 
 It is possible to change the upper and lower threshold at anny given time by calling the following functions...
 
@@ -186,6 +188,49 @@ void max31865_setLowFaultThreshold(max31865_t*  device,
                                    uint16_t     threshold);
 
 ```
+
+## 5. Faults
+
+### 5.1. Reading Faults
+
+It is possible to read the faults as follows...
+```c
+uint8_t max31865_readFault(const max31865_t* device);
+```
+The return value can be checked with the typedef enum members of **max31865_err_t**. For example...
+
+```c
+errors = max31865_readFault(&TempSensor);
+
+if(error & max31865_err_VOLTAGE_FAULT) {
+  // handle voltage fault error
+}
+if(error & max31865_err_VRTDIN_TO_LOW){
+  // ...
+}
+//etc...
+
+max31865_clearFault(&TempSensor);
+
+```
+
+
+
+
+
+### 5.2. Clearing Faults
+It is possible to clear all faults with as following
+```c
+uint8_t max31865_clearFault(const max31865_t* device);
+```
+## Prospects
+
+### Feature Ideas
+* handler for the faults which calls the associated callbacks to each error when using...
+```c
+uint8_t max31865_readFault(const max31865_t* device);
+```
+* system check which performs a fault detection cycle
 
 ## Contributing
 
