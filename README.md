@@ -5,6 +5,7 @@ This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/
 # Table of Content
 1.  [Getting Started](#p_1)
     1. [Prerequisites](#p_1_1)
+    2. [Advice](#p_1_2)
 2.  [Creating an Object](#p_2)
     1. [Init Function Parameters](#p_2_1)
 3.  [Measuring Temperature](#p_3)
@@ -35,6 +36,10 @@ The driver has an object-oriented approach which enbales a certain abstraction w
   * reference Resistor chosen according to Datasheet
   * RTD (PT100 ot PT1000 etc.)
 * low level software for GPIO and SPI must be provided
+
+### 1.2. Advice <a name="p_1_2"></a>
+
+If you want to get familiar with the MAX31865 device I recoment you to buy a [breakout board from adafruit](https://www.adafruit.com/product/3328) which altready contains the whole hardware and hardware documentation neccesary to enable fast prototyping.
 
 ## 2. Creating an Object <a name="p_2"></a>
 
