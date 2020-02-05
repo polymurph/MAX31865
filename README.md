@@ -166,7 +166,7 @@ There are four ways one can get the remperature.
   float max31865_readKelvin(const max31865_t* device);
   ```
 
-For reading Celsius °C the Resistance of the RTD is measured and is then calculated with a polynomial approximation of the RTD curve. It is done with the aid oh Hrners method to reduce the needed multiplication and addition numbers.
+For reading Celsius °C the Resistance of the RTD is measured and is then calculated with a polynomial approximation of the RTD curve. It is done with the  Horners method to reduce the needed multiplication and addition numbers.
 
 For reading Kelvin °K the measured Value in °C is added with the offset of 273.15 °K.
 
