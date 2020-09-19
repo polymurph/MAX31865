@@ -39,7 +39,7 @@ The driver has an object-oriented approach which enbales a certain abstraction w
 
 ### 1.2. Advice <a name="p_1_2"></a>
 
-If you want to get familiar with the MAX31865 device I recoment you to buy a [breakout board from adafruit](https://www.adafruit.com/product/3328) which altready contains the whole hardware and hardware documentation neccesary to enable fast prototyping.
+If you want to get familiar with the MAX31865 device I recomend you to buy a [breakout board from adafruit](https://www.adafruit.com/product/3328) which altready contains the whole hardware and documentation neccesary to enable fast prototyping.
 
 ## 2. Creating an Object <a name="p_2"></a>
 
