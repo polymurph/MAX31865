@@ -105,11 +105,11 @@ void max31865_init(max31865_t*  device,
 
     // low and high fault threshold setup
     temp_1 = device->highFaultThreshold;
-    buff[0] = (uint8_t)(temp_1);
-    buff[1] = (uint8_t)(temp_1 >> 8);
+    buff[0] = (uint8_t)(temp_1 >> 8);
+    buff[1] = (uint8_t)(temp_1);
     temp_1 = device->lowFaultThreshold;
-    buff[2] = (uint8_t)(temp_1);
-    buff[3] = (uint8_t)(temp_1 >> 8);
+    buff[2] = (uint8_t)(temp_1 >> 8);
+    buff[3] = (uint8_t)(temp_1);
 
     temp = device->configReg;
     _write_n_reg(device, REG_WRITE_CONFIGURATION, &temp, 1);
@@ -142,7 +142,7 @@ uint16_t max31865_readADC(const max31865_t* device)
     }
 
 
-    return (((uint16_t)((buff[0]<<8) | buff[1])) >> 1);
+    return ((uint16_t)((buff[0]<<8) | (buff[1] >> 1)) );
 }
 
 float max31865_readRTD_ohm(const max31865_t* device)
