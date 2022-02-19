@@ -1,0 +1,8 @@
+# vim
+*.swp
+*.o
+*.d
+*.lst
+
+# vscode
+.vscode/*
