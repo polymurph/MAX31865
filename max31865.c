@@ -141,8 +141,7 @@ uint16_t max31865_readADC(const max31865_t* device)
         _handle_threshold_fault(device);
     }
 
-
-    return ((uint16_t)((buff[0]<<8) | (buff[1] >> 1)) );
+    return (uint16_t)buff[0] << 7 | (uint16_t)buff[1] >> 1;
 }
 
 float max31865_readRTD_ohm(const max31865_t* device)
