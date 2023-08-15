@@ -26,16 +26,16 @@ This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/
 
 These instructions will help you implement the driver step by step into your project.
 
-The driver has an object-oriented approach which enbales a certain abstraction which helps to minimize complexety and improve readability.
+The driver has an object-oriented approach which enbales a certain abstraction. This helps to minimize complexety and improve readability.
 
 ### 1.1. Prerequisites <a name="p_1_1"></a>
 * [Download](https://github.com/polymurph/MAX31865/archive/master.zip) and place the max31865.c/.h files into a desired folder inside your project.
-* Knowledge about the functionality of the Device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
+* Knowledge about the functionality of the device and it's hardware aspects (see [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf)).
 * fully configured hardware, this implies:
   * hardware configured for 3-wire od 2/4-wire
-  * reference Resistor chosen according to Datasheet
+  * reference resistor chosen according to datasheet
   * RTD (PT100 ot PT1000 etc.)
-* low level software for GPIO and SPI must be provided
+* low level firmware for GPIO and SPI must be provided
 
 ### 1.2. Advice <a name="p_1_2"></a>
 
@@ -52,17 +52,17 @@ Then we can create an instance...
 ```c
 max31865_t TempSensor;
 ```
-This instance has not yet been initialized and must be done with the init function to complete the process as following...
+This instance has not yet been initialized. This can be done by passing the created object to the init function as following...
 ```c
 max31865_init(&TempSensor,...);
 ```
-The init function will update all the struct members of the TempSensor Object with your desired configurations. It will aslo automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
+The init function will update all the struct members of the TempSensor object with your desired configurations. It will aslo automatically write the desired configurations and the upper and lower temperature fault thresholds directly to the device (MAX31865).
 
 ### 2.1. Init Function Parameters Description <a name="p_2_1"></a>
 ```c
 max31865_init(max31865_t*  device,...);
 ```
-**device** is a pointer to your Object. Your Oject must be passed by pointer to be able to initialized. For example...
+**device** is a pointer to your object. Your oject must be passed by pointer to be able to initialized. For example...
 ```c
 max31865_init(&TempSensor,...);
 max31865_readADC(&TempSensor);
@@ -73,7 +73,7 @@ max31865_readADC(&TempSensor);
 ```c
 max31865_init(...,fptr_b_t chipselect_cb,...);
 ```
-**chipselect_cp** is a function pointer to a chipselect function for SPI interface. This function shold contain the needed GPIO manipulations to select the device. The callback function must have a bool type as parameter and void type as return parameter as shown here...
+**chipselect_cp** is a function pointer to a chipselect function which is used for the SPI interface. This function should contain the needed GPIO manipulations to select the device. The callback function must have a bool type as parameter and void type as return parameter as shown here...
 
 ```c
 void chipselect(boot enable) {
@@ -90,7 +90,7 @@ void chipselect(boot enable) {
 ```c
 max31865_init(...,u8_fptr_u8_t spi_trx_cb,,...);
 ```
-**spi_trx_cb** is a function pointer to a callback for a SPI transrecive (full duplex) function. This function should contain all the Master SPI transrecive manipulations.The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
+**spi_trx_cb** is a function pointer to a callback for a SPI transrecive (full duplex) function. This function should contain all the master SPI transrecive manipulations.The callback function must have a uint8_t type as parameter and uint8_t type as return parameter as shown here... 
 ```c
 uint8_t spi_trx(uint8_t data) {
   // SPI manipulations
@@ -103,7 +103,7 @@ uint8_t spi_trx(uint8_t data) {
 ```c
 max31865_init(..., fptr_t charged_time_delay_cb,...);
 ```
-**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle of at least 10.5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system.
+**charged_time_delay_cb** is a function pointer to a callback for the chargetime delay function. This function should contain a delay cycle of at least 10.5 times the charging constant given by the capacitance of the capacitor between RTDI+ and RTDIN- and resistance of the RTD. One possibility is to use a delay from a RTOS system which allows to free up resources.
 
 ![](https://raw.githubusercontent.com/polymurph/MAX31865/master/formula_charge_time.png)
 
