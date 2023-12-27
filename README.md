@@ -1,6 +1,7 @@
 # MAX31865
 
 This is a driver for the [MAX31865](https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31865.html) RTD-to-Digital converter (RTD: resistance temperature detectors).
+
 It is written in C.
 
 # Table of Content
